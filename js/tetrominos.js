@@ -1,5 +1,3 @@
-import {Grid} from "./grid.js"
-
 export class Tetrominos {
     constructor(form, position, rotation, name) {
         this.form = form ;
@@ -31,12 +29,15 @@ export class Tetrominos {
     positionLeftOk(position, rotation, grid) {  
         return this.getOccupiedCells(rotation, position).map(pos =>  pos[0] >= 0).reduce((acc, curr) => acc && curr) 
     }
+
     positionRightOk(position, rotation, grid) { 
-        return this.getOccupiedCells(rotation, position).map(pos => pos[0] < grid.grid.length).reduce((acc, curr) => acc && curr) 
+        return this.getOccupiedCells(rotation, position).map(pos => pos[0] < grid.nCol).reduce((acc, curr) => acc && curr) 
     }
+
     positionBottomOk(position, rotation, grid) { 
         return this.getOccupiedCells(rotation, position).map(pos => pos[1] >= 0).reduce((acc, curr) => acc && curr)
-     }
+    }
+
     positionOk(position,rotation, grid) {
         return  this.positionLeftOk(position, rotation, grid) && 
                 this.positionRightOk(position, rotation, grid) && 
@@ -45,7 +46,7 @@ export class Tetrominos {
 
     collisionOk(position, rotation, grid) {
         if(this.positionOk(position, rotation, grid)) {
-            return this.getOccupiedCells(rotation, position).map(pos =>  grid.grid[pos[0]][pos[1]] === "E").reduce((acc, curr) => acc && curr) ;
+            return this.getOccupiedCells(rotation, position).map(pos =>  grid.isEmpty(pos[0], pos[1])).reduce((acc, curr) => acc && curr) ;
         } else {
             return false ;
         }
@@ -66,6 +67,8 @@ export class Tetrominos {
     move(direction, grid) {
         const newPosition = this.getNextPosition(direction) ;
 
+        console.log(this.positionOk(newPosition, this.rotation, grid)) ;
+        console.log(this.collisionOk(newPosition, this.rotation, grid)) ;
         if (this.positionOk(newPosition, this.rotation, grid) && this.collisionOk(newPosition, this.rotation, grid)) {
             this.position = newPosition ;
             return true ;
@@ -108,19 +111,19 @@ export class Tetrominos {
 
     plot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
-            grid.guiGrid[cell[0]][cell[1]].classList.add("tetro-"+this.name)
+            grid.addClasses(cell[0], cell[1], "tetro-"+this.name)
         })
     }
 
-    unplot() {
+    unplot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
-            grid.guiGrid[cell[0]][cell[1]].classList.remove("tetro-"+this.name)
+            grid.removeClasses(cell[0], cell[1], "tetro-"+this.name)
         })
     }
 
     addToGrid(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
-            grid.grid[cell[0]][cell[1]] = this.name ;
+            grid.setPropriety(cell[0], cell[1], this.name)
         })
         this.plot(grid)
     }
@@ -129,71 +132,6 @@ export class Tetrominos {
 
 export class TetroL extends Tetrominos{
     constructor() {
-        super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 18.5] , 0, "L") ;
+        super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 20.5] , 0, "L") ;
     }
 }
-
-// main
-
-const grid = new Grid(10,20);
-
-const tetro = new TetroL();
-const tetroB = new Tetrominos([[0,0]], [6.5,4.5], 0, "J");
-tetroB.addToGrid(grid)
-tetro.plot(grid)
-
-
-
-const buttonLeft = document.querySelector("#goleft") ;
-buttonLeft.onclick = () => {
-    tetro.unplot(grid)
-    console.log(tetro.move("l", grid))
-    tetro.plot(grid)
-}
-
-const buttonRight = document.querySelector("#goright") ;
-buttonRight.onclick = () => {
-    tetro.unplot(grid)
-    console.log(tetro.move("r", grid))
-    tetro.plot(grid)
-}
-
-const buttonFall = document.querySelector("#fall") ;
-buttonFall.onclick = () => {
-    tetro.unplot(grid)
-    console.log(tetro.move("d", grid))
-    tetro.plot(grid)
-}
-
-const buttonRot = document.querySelector("#rotate") ;
-buttonRot.onclick = () => {
-    tetro.unplot(grid)
-    console.log(tetro.rotate(grid))
-    tetro.plot(grid)
-}
-
-function toto() {
-    let newTime = Date.now() ;
-    if (tetro.position[1] > 1) {
-        tetro.unplot(grid) ;
-        tetro.move("d", grid) ;
-        tetro.plot(grid) ;
-        console.log(newTime - lastTime) ;
-        lastTime = newTime ;
-        setTimeout(toto, 100)
-    } else if (counter < 10) {
-        tetro.unplot(grid) ;
-        tetro.position[1] =  18.5 ;
-        console.log("-----------------")
-        lastTime = Date.now() ;
-        counter++
-        toto()
-    }
-
-}
-
-let lastTime = Date.now() ;
-let counter = 0 ;
-toto()
-
-
