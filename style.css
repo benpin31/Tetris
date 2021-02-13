@@ -2,6 +2,13 @@
 
 :root {
     --cell-size : calc(100vh / 20) ;
+    --color-I : #739ee9 ;
+    --color-J : #0341AE ;
+    --color-S : #72CB3B ;
+    --color-O: #FFD500 ;
+    --color-L: #FF971C;
+    --color-Z: #FF3213;
+    --color-T: #ae18cc ;
 }
 
 /* */
@@ -65,3 +72,30 @@
     grid-column: 10 ;
 }
 
+.tetro-I {
+    background-color: var(--color-I);
+}
+
+.tetro-J {
+    background-color: var(--color-J);
+}
+
+.tetro-L {
+    background-color: var(--color-L);
+}
+
+.tetro-O {
+    background-color: var(--color-O);
+}
+
+.tetro-S {
+    background-color: var(--color-S);
+}
+
+.tetro-T {
+    background-color: var(--color-T);
+}
+
+.tetro-Z {
+    background-color: var(--color-Z);
+}
