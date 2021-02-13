@@ -19,6 +19,10 @@
     box-sizing: border-box ;
 }
 
+body {
+    display: flex
+}
+
 #grid {
     height: calc(20*var(--cell-size));
     width: calc(10 * var(--cell-size));
