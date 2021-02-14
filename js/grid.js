@@ -37,4 +37,30 @@ export class Grid {
         col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.remove(classeName) : "" ;
     }
 
+    getFullLines() {
+        return this.grid.map(row => row.every(cell => cell !== "E")).reduce((acc, curr, index) => {curr === true ? acc.push(index) : "" ; return acc} , []) ;
+    }
+
+    clearFullLines() {
+        const fullLines = this.getFullLines() ;
+
+        for(let k = 0 ; k < this.nCol ; k++) {
+            for (let l = 0 ; l < this.nRow ; l++) {
+                this.removeClasses(k,l,"tetro-"+this.getPropriety(k,l))
+            }
+        }
+
+        this.grid = this.grid.filter((row, index) => !fullLines.includes(index))
+        for (let k = 0 ; k < fullLines.length ; k++) {
+            this.grid.push("E".repeat(this.nCol).split(""))
+        }
+
+        for(let k = 0 ; k < this.nCol ; k++) {
+            for (let l = 0 ; l < this.nRow ; l++) {
+                this.addClasses(k,l,"tetro-"+this.getPropriety(k,l))
+            }
+        }
+
+    }
+
 }

@@ -155,3 +155,8 @@ export class Tetromino extends Polyomino {
         }
     }
 }
+
+export const generateRandomTetro = () => {
+    const tetroList = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'] ;
+    return new Tetromino(tetroList[Math.floor(Math.random() * tetroList.length)])
+}

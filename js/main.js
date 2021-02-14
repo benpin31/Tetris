@@ -1,79 +1,112 @@
 import {Grid} from "./grid.js"
-import {Polyomino, Tetromino} from "./tetrominos.js"
-
-
+import {Polyomino, Tetromino, generateRandomTetro} from "./tetrominos.js"
 
 const grid = new Grid(10,20);
 
-const tetro = new Tetromino("Z");
-const tetroB = new Polyomino([[0,0]], [7.5,4.5], 0, "J");
-tetroB.addToGrid(grid)
-tetro.plot(grid)
 
+let tetro = generateRandomTetro() ;
 
+let canFall = true ;
+let canMove  ;
 
-const buttonLeft = document.querySelector("#goleft") ;
-buttonLeft.onclick = () => {
-    tetro.unplot(grid)
-    tetro.move("l", grid)
-    tetro.plot(grid)
+const timings = {
+    nbFrameBeforeNextFallLevel: 60 ,
+    nbFrameBeforeNextFall: 60 ,
+    nbFrameSinceLastFall: 60 ,
+
+    nbFrameBeforNewTetroInit: 60 ,
+    nbFrameBeforNewTetro: 60 ,
+    nbFrameSinceReachFloor: 0 ,
+
+    nbFrameBeforNextMove: 10 ,
+    nbFrameSinceLastMove: 10 ,
+
+    nbChainMoveLeft: 0 ,
+    nbChainMoveRight: 0 ,
+    nbChainMoveRotate: 0 ,
+
 }
 
-const buttonRight = document.querySelector("#goright") ;
-buttonRight.onclick = () => {
-    tetro.unplot(grid)
-    tetro.move("r", grid)
-    tetro.plot(grid)
+const key = {} ;
+window.addEventListener("keydown",(event) => {key[event.code] = event.type === "keydown"});
+window.addEventListener("keyup",(event) => {key[event.code] = event.type === "keydown"});
+
+const tetroTransition = () => {
+    tetro.addToGrid(grid) ;
+    timings.nbFrameSinceReachFloor = 0 ;
+    timings.nbFrameSinceLastFall = 0 ;
+    canFall = true ;
+    tetro = generateRandomTetro() ;
+    grid.clearFullLines()
 }
 
-let titi = 1;
-const buttonFall = document.querySelector("#fall") ;
-buttonFall.onclick = (event) => {
-    tetro.unplot(grid)
-    tetro.move("d", grid)
-    tetro.plot(grid) ;
+const move = (KeyArrowName, chainMoveName, callBackMove) => {
+    if(key[KeyArrowName] && timings.nbFrameSinceLastMove >= timings.nbFrameBeforNextMove) {
+        timings[chainMoveName] ++ ;
+        tetro.unplot(grid)
+        canMove = callBackMove() ;
+        console.log(canMove)
+        tetro.plot(grid)
+        if(canMove) {
+            timings.nbFrameSinceReachFloor = 0 ;
+            timings.nbFrameSinceLastMove = timings[chainMoveName] > 1 ? 8 : 0 ;
+            canFall = true ;
+            timings[chainMoveName] ++ ;
+        } else {
+            canMove = true ;
+            timings[chainMoveName] = 0 ;
+        } 
+    } else {
+        if(!key[KeyArrowName]) {
+            timings[chainMoveName] = 0
+        }
+    }
 }
 
-const buttonRot = document.querySelector("#rotate") ;
-buttonRot.onclick = () => {
-    tetro.unplot(grid)
-    tetro.rotate(grid)
-    tetro.plot(grid)
+const accelerate = () => {
+    if(canFall) {
+        if (key.ArrowDown) {
+            timings.nbFrameBeforeNextFall = 2 ;
+        } else {
+            timings.nbFrameBeforeNextFall = timings.nbFrameBeforeNextFallLevel ;
+        }
+    } else {
+        if (key.ArrowDown) {
+            tetroTransition()
+        } 
+    }
+
 }
 
-tetro.plot(grid) ;
+const game = () => {
 
+    move("ArrowUp", "nbChainMoveRotate", () => tetro.rotate(grid)) ;
+    move("ArrowLeft", "nbChainMoveLeft", () => tetro.move("l",grid)) ;
+    move("ArrowRight", "nbChainMoveRight", () => tetro.move("r",grid)) ;
+    accelerate() ;
 
-// function toto() {
-//     let newTime = Date.now() ;
-//     if (tetro.position[1] > 0) {
-//         tetro.unplot(grid) ;
-//         tetro.move("d", grid) ;
-//         tetro.plot(grid) ;
-//         lastTime = newTime ;
-//         //setTimeout(toto, 1000)
-//     } else if (counter < 10) {
-//         tetro.unplot(grid) ;
-//         tetro.position[1] =  19.5 ;
-//         lastTime = Date.now() ;
-//         counter++
-//         toto()
-//     }
+    if (canFall && timings.nbFrameSinceLastFall >= timings.nbFrameBeforeNextFall) {
+        tetro.unplot(grid)
+        canFall = tetro.move("d", grid) ;
+        tetro.plot(grid)
 
-// }
+        timings.nbFrameSinceLastFall = 0 ;
+    } else {
+        canFall ? timings.nbFrameSinceLastFall++ : "" ;
+    }
 
-// let lastTime = Date.now() ;
-// let counter = 0 ;
-// //toto()
+    if (!canFall) {
+        if(timings.nbFrameSinceReachFloor < timings.nbFrameBeforNewTetro) {
+            timings.nbFrameSinceReachFloor++ ;
+        } else {
+            tetroTransition()
+        }
+    } 
 
-// const key = {}
+    timings.nbFrameSinceLastMove++ ;
 
-// window.addEventListener("keydown",(event) => key[event.code] = event.type === "keydown");
-// window.addEventListener("keyup",(event) => key[event.code] = event.type === "keydown");
-// window.addEventListener("mousedown",(event) => {key["click"] = event.type === "mousedown"; console.log(event)});
-// window.addEventListener("mouseup",(event) => key["click"] = event.type === "mousedown");
-// window.addEventListener("touchmove",(event) =>console.log(event));
+    window.requestAnimationFrame(game);
+}
 
-
-// //setInterval(() => console.log(key.click), 10)
+game()
 
