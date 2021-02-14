@@ -1,4 +1,4 @@
-export class Tetrominos {
+export class Polyomino {
     constructor(form, position, rotation, name) {
         this.form = form ;
         // form is an array of corrdinates [Abs, ord] given in a spacial system whose (0,0) is the rotation point of the tetrominos.
@@ -67,8 +67,6 @@ export class Tetrominos {
     move(direction, grid) {
         const newPosition = this.getNextPosition(direction) ;
 
-        console.log(this.positionOk(newPosition, this.rotation, grid)) ;
-        console.log(this.collisionOk(newPosition, this.rotation, grid)) ;
         if (this.positionOk(newPosition, this.rotation, grid) && this.collisionOk(newPosition, this.rotation, grid)) {
             this.position = newPosition ;
             return true ;
@@ -130,8 +128,30 @@ export class Tetrominos {
 
 }
 
-export class TetroL extends Tetrominos{
-    constructor() {
-        super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 20.5] , 0, "L") ;
+export class Tetromino extends Polyomino {
+    constructor(name) {
+        switch(name) {
+            case 'I' :
+                super([[-3/2, 1/2], [-1/2, 1/2], [1/2, 1/2], [3/2, 1/2]], [5,20], 0, name) ;
+                break ;
+            case 'J':
+                super([[-1,1],[-1,0], [0,0], [1,0]] , [4.5, 20.5] , 0, name) ;
+                break ;
+            case 'L':
+                super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 20.5] , 0, name) ;
+                break ;
+            case 'O':
+                super([[-1/2,1/2], [-1/2,-1/2], [1/2,-1/2], [1/2,1/2]] , [5, 21] , 0, name) ;
+                break ;    
+            case 'S':
+                super([[-1,0], [0,0], [0,1], [1,1]] , [4.5, 20.5] , 0, name) ;
+                break ;
+            case 'T':
+                super([[-1,0], [0,0], [1,0], [0,1]] , [4.5, 20.5] , 0, name) ;
+                break ;
+            case 'Z':
+                super([[-1,1], [0,1], [0,0], [1,0]] , [4.5, 20.5] , 0, name) ;
+                break ;        
+        }
     }
 }
