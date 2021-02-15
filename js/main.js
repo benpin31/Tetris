@@ -12,8 +12,6 @@ let canFall = true ;
 let canMove  ;
 
 const param = new GameParameters() ;
-console.log(param)
-
 
 const key = {} ;
 window.addEventListener("keydown",(event) => {key[event.code] = event.type === "keydown"});
@@ -26,7 +24,9 @@ const tetroTransition = () => {
         param.timings.fallings.counter = 0 ;
         canFall = true ;
         tetro = tetrominos.shuffle() ;
-        grid.clearGrid(grid.getFullLines())
+        let fullLines = grid.getFullLines() ;
+        param.updateScore(fullLines) ;
+        grid.clearGrid(fullLines) ;
     } else {
         param.gameOver = true ;
     }
