@@ -41,8 +41,8 @@ export class Grid {
         return this.grid.map(row => row.every(cell => cell !== "E")).reduce((acc, curr, index) => {curr === true ? acc.push(index) : "" ; return acc} , []) ;
     }
 
-    clearFullLines() {
-        const fullLines = this.getFullLines() ;
+    clearGrid(lines) {
+        //const fullLines = this.getFullLines() ;
 
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {
@@ -50,8 +50,8 @@ export class Grid {
             }
         }
 
-        this.grid = this.grid.filter((row, index) => !fullLines.includes(index))
-        for (let k = 0 ; k < fullLines.length ; k++) {
+        this.grid = this.grid.filter((row, index) => !lines.includes(index))
+        for (let k = 0 ; k < lines.length ; k++) {
             this.grid.push("E".repeat(this.nCol).split(""))
         }
 

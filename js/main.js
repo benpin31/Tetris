@@ -1,64 +1,55 @@
 import {Grid} from "./grid.js"
-import {Polyomino, Tetromino, generateRandomTetro} from "./tetrominos.js"
+import {TetrominosBag} from "./tetrominos.js"
+import {GameParameters} from "./gameParameter.js"
+
 
 const grid = new Grid(10,20);
 
-
-let tetro = generateRandomTetro() ;
+const tetrominos = new TetrominosBag()
+let tetro = tetrominos.shuffle() ;
 
 let canFall = true ;
 let canMove  ;
 
-const timings = {
-    nbFrameBeforeNextFallLevel: 60 ,
-    nbFrameBeforeNextFall: 60 ,
-    nbFrameSinceLastFall: 60 ,
+const param = new GameParameters() ;
+console.log(param)
 
-    nbFrameBeforNewTetroInit: 60 ,
-    nbFrameBeforNewTetro: 60 ,
-    nbFrameSinceReachFloor: 0 ,
-
-    nbFrameBeforNextMove: 10 ,
-    nbFrameSinceLastMove: 10 ,
-
-    nbChainMoveLeft: 0 ,
-    nbChainMoveRight: 0 ,
-    nbChainMoveRotate: 0 ,
-
-}
 
 const key = {} ;
 window.addEventListener("keydown",(event) => {key[event.code] = event.type === "keydown"});
 window.addEventListener("keyup",(event) => {key[event.code] = event.type === "keydown"});
 
 const tetroTransition = () => {
-    tetro.addToGrid(grid) ;
-    timings.nbFrameSinceReachFloor = 0 ;
-    timings.nbFrameSinceLastFall = 0 ;
-    canFall = true ;
-    tetro = generateRandomTetro() ;
-    grid.clearFullLines()
+    if(!tetro.isAboveGrid()) {
+        tetro.addToGrid(grid) ;
+        param.timings.reachFloor.counter = 0 ;
+        param.timings.fallings.counter = 0 ;
+        canFall = true ;
+        tetro = tetrominos.shuffle() ;
+        grid.clearGrid(grid.getFullLines())
+    } else {
+        param.gameOver = true ;
+    }
 }
 
 const move = (KeyArrowName, chainMoveName, callBackMove) => {
-    if(key[KeyArrowName] && timings.nbFrameSinceLastMove >= timings.nbFrameBeforNextMove) {
-        timings[chainMoveName] ++ ;
+    if(key[KeyArrowName] && param.timings.noActionFrame.counter >= param.timings.noActionFrame.value) {
+        param.timings.noActionFrame.chainMoveCounter[chainMoveName] ++ ;
         tetro.unplot(grid)
         canMove = callBackMove() ;
-        console.log(canMove)
         tetro.plot(grid)
         if(canMove) {
-            timings.nbFrameSinceReachFloor = 0 ;
-            timings.nbFrameSinceLastMove = timings[chainMoveName] > 1 ? 8 : 0 ;
+            param.timings.reachFloor.counter = 0 ;
+            param.timings.noActionFrame.counter = param.timings.noActionFrame.chainMoveCounter[chainMoveName] > 1 ? 8 : 0 ;
             canFall = true ;
-            timings[chainMoveName] ++ ;
+            param.timings.noActionFrame.chainMoveCounter[chainMoveName] ++ ;
         } else {
             canMove = true ;
-            timings[chainMoveName] = 0 ;
+            param.timings.noActionFrame.chainMoveCounter[chainMoveName] = 0 ;
         } 
     } else {
         if(!key[KeyArrowName]) {
-            timings[chainMoveName] = 0
+            param.timings.noActionFrame.chainMoveCounter[chainMoveName] = 0 ;
         }
     }
 }
@@ -66,46 +57,56 @@ const move = (KeyArrowName, chainMoveName, callBackMove) => {
 const accelerate = () => {
     if(canFall) {
         if (key.ArrowDown) {
-            timings.nbFrameBeforeNextFall = 2 ;
+            param.timings.fallings.current = 2 ;
         } else {
-            timings.nbFrameBeforeNextFall = timings.nbFrameBeforeNextFallLevel ;
+            param.timings.fallings.current = param.timings.fallings.value ;
         }
     } else {
         if (key.ArrowDown) {
             tetroTransition()
         } 
     }
-
 }
 
 const game = () => {
 
-    move("ArrowUp", "nbChainMoveRotate", () => tetro.rotate(grid)) ;
-    move("ArrowLeft", "nbChainMoveLeft", () => tetro.move("l",grid)) ;
-    move("ArrowRight", "nbChainMoveRight", () => tetro.move("r",grid)) ;
+    move("ArrowUp", "rotate", () => tetro.rotate(grid)) ;
+    move("ArrowLeft", "left", () => tetro.move("l",grid)) ;
+    move("ArrowRight", "right", () => tetro.move("r",grid)) ;
     accelerate() ;
 
-    if (canFall && timings.nbFrameSinceLastFall >= timings.nbFrameBeforeNextFall) {
+    if (canFall && param.timings.fallings.counter >= param.timings.fallings.current) {
         tetro.unplot(grid)
         canFall = tetro.move("d", grid) ;
         tetro.plot(grid)
 
-        timings.nbFrameSinceLastFall = 0 ;
+        param.timings.fallings.counter = 0 ;
     } else {
-        canFall ? timings.nbFrameSinceLastFall++ : "" ;
+        canFall ? param.timings.fallings.counter++ : "" ;
     }
 
     if (!canFall) {
-        if(timings.nbFrameSinceReachFloor < timings.nbFrameBeforNewTetro) {
-            timings.nbFrameSinceReachFloor++ ;
+        if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
+            param.timings.reachFloor.counter++ ;
         } else {
-            tetroTransition()
+            tetroTransition() ;
         }
     } 
 
-    timings.nbFrameSinceLastMove++ ;
+    param.timings.noActionFrame.counter++ ;
 
-    window.requestAnimationFrame(game);
+    if (!param.gameOver) {
+        window.requestAnimationFrame(game);
+    } else {
+        document.querySelector("#game-over-message").classList.remove("is-not-visible")
+        if(key.Space) {
+            grid.clearGrid([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
+            param.reset() ;
+            canFall = true ;
+            document.querySelector("#game-over-message").classList.add("is-not-visible")
+        }
+        window.requestAnimationFrame(game) ;
+    }
 }
 
 game()

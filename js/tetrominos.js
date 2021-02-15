@@ -52,6 +52,10 @@ export class Polyomino {
         }
     }
 
+    isAboveGrid() {
+        return this.getOccupiedCells(this.rotation, this.position).some(cell => cell[1] > 20) ;
+    }
+
     getNextPosition(direction) {
         if (direction === "l") {
             return [this.position[0]-1 , this.position[1]] ;
@@ -156,7 +160,22 @@ export class Tetromino extends Polyomino {
     }
 }
 
-export const generateRandomTetro = () => {
-    const tetroList = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'] ;
-    return new Tetromino(tetroList[Math.floor(Math.random() * tetroList.length)])
+// export const generateRandomTetro = () => {
+//     const tetroList = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'] ;
+//     return new Tetromino(tetroList[Math.floor(Math.random() * tetroList.length)])
+// }
+
+export class TetrominosBag {
+    constructor() {
+        this.tetrominos =  ['I', 'J', 'L', 'O', 'S', 'T', 'Z'] ;
+        this.bag = [...this.tetrominos] ;
+    }
+
+    shuffle() {
+        if(this.bag.length === 0) {
+            this.bag = [...this.tetrominos] ;
+        }
+        return new Tetromino(this.bag.splice(Math.floor(Math.random()*this.bag.length),1)[0]) ;
+    }
 }
+
