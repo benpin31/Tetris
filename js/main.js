@@ -8,6 +8,8 @@ const grid = new Grid(10,20);
 const tetrominos = new TetrominosBag()
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
+let tetroSauv ;
+
 nextTetro.plotNextTetro(grid)
 
 let canFall = true ;
@@ -32,6 +34,7 @@ const tetroTransition = () => {
         let fullLines = grid.getFullLines() ;
         param.updateScore(fullLines) ;
         grid.clearGrid(fullLines) ;
+        param.tetroSauvCounter = 0 ;
     } else {
         param.gameOver = true ;
     }
@@ -73,12 +76,44 @@ const accelerate = () => {
     }
 }
 
+const saveTetro = () => {
+    if(key.KeyS & param.tetroSauvCounter === 0 ) {
+        if(!tetroSauv) {
+            tetro.unplot(grid) ;
+            nextTetro.unplotNextTetro(grid) ;
+            tetroSauv = tetro ;
+            tetro = nextTetro ;
+            nextTetro =  tetrominos.shuffle() ;
+            tetro.reset() ;
+            nextTetro.reset() ;
+            tetroSauv.reset() ;
+            tetro.plot(grid) ;
+            nextTetro.plotNextTetro(grid) ;
+            tetroSauv.plotSaveTetro(grid) ;
+            param.tetroSauvCounter ++ ;
+        } else {
+            tetro.unplot(grid) ;
+            tetroSauv.unplotSaveTetro(grid) ;
+            let tetroSauv2 = tetroSauv ;
+            tetroSauv = tetro ;
+            tetro = tetroSauv2 ;
+            tetro.reset() ;
+            tetroSauv.reset() ;
+            tetro.plot(grid) ;
+            tetroSauv.plotSaveTetro(grid) ;
+            param.tetroSauvCounter ++ ;
+        }
+    }  
+}
+
 const game = () => {
 
     move("ArrowUp", "rotate", () => tetro.rotate(grid)) ;
     move("ArrowLeft", "left", () => tetro.move("l",grid)) ;
     move("ArrowRight", "right", () => tetro.move("r",grid)) ;
     accelerate() ;
+    saveTetro() ;
+
 
     if (canFall && param.timings.fallings.counter >= param.timings.fallings.current) {
         tetro.unplot(grid)

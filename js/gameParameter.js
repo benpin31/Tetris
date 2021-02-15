@@ -43,6 +43,8 @@ export class GameParameters {
             longestCombo: 0
 
         }
+
+        this.tetroSauvCounter = 0 ;
     }   
 
     reset() {
@@ -63,6 +65,8 @@ export class GameParameters {
             longestCombo: 0
 
         }
+
+        this.tetroSauvCounter = 0 ;
     }
 
     updateNbLines(fullLines) {

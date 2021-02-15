@@ -18,10 +18,17 @@ export class Grid {
 
         const nextTetroCells = [...document.querySelectorAll("#next-tetro > .cell")] ;
         const nextTetroGrid = [] ;
-        for (let k = 0; k < 6 ; k++) {
+        for (let k = 0; k < 4 ; k++) {
             nextTetroGrid.unshift(nextTetroCells.filter(cell => cell.classList.contains("row-"+(k+1)))) ;
         }
         this.nextTetroGrid = nextTetroGrid ;   
+
+        const saveTetroCells = [...document.querySelectorAll("#save-tetro > .cell")] ;
+        const saveTetroGrid = [] ;
+        for (let k = 0; k < 4 ; k++) {
+            saveTetroGrid.unshift(saveTetroCells.filter(cell => cell.classList.contains("row-"+(k+1)))) ;
+        }
+        this.saveTetroGrid = saveTetroGrid ;   
     }
 
     getPropriety(col, row) {
@@ -37,11 +44,12 @@ export class Grid {
     }
 
     addClasses(col, row, classeName, whichGrid) {
-        console.log(this.nextTetroGrid) ;
         if(whichGrid === "gui") {
             col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.add(classeName) : "" ;
         } else if (whichGrid === "next") {
             this.nextTetroGrid[row][col].classList.add(classeName)
+        } else if (whichGrid === "save") {
+            this.saveTetroGrid[row][col].classList.add(classeName)
         }
     }
 
@@ -50,6 +58,8 @@ export class Grid {
             col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.remove(classeName) : "" ;
         } else if (whichGrid === "next") {
             this.nextTetroGrid[row][col].classList.remove(classeName)
+        } else if (whichGrid === "save") {
+            this.saveTetroGrid[row][col].classList.remove(classeName)
         }
     }
 

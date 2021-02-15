@@ -1,5 +1,5 @@
 export class Polyomino {
-    constructor(form, position, rotation, name) {
+    constructor(form, position, positionNext,  rotation, rotationNext, name) {
         this.form = form ;
         // form is an array of corrdinates [Abs, ord] given in a spacial system whose (0,0) is the rotation point of the tetrominos.
         // The coordinates are the center of the square composent of the tetromino. 
@@ -7,10 +7,13 @@ export class Polyomino {
         //  - integers l : in that case, the tetromino rotation point is the center of a square
         //  - half integer : in that case, the tetromino rotation point is on an edge of the tetromino
         this.position = position ;
+        this.positionNext = positionNext ;
         // position of the center of the tetromino On the the grid game
         this.rotation = rotation ;
+        this.rotationNext  = rotationNext ;
         // integer which code the rotation rotation of the tetromino : only four positions 0 (initial), 1, 2, 3
         this.name = name ;
+
     }
 
     getRotatedPosition(rotation) {
@@ -53,7 +56,7 @@ export class Polyomino {
     }
 
     isAboveGrid() {
-        return this.getOccupiedCells(this.rotation, this.position).some(cell => cell[1] > 20) ;
+        return this.getOccupiedCells(this.rotation, this.position).some(cell => cell[1] > 19) ;
     }
 
     getNextPosition(direction) {
@@ -124,15 +127,26 @@ export class Polyomino {
     }
 
     plotNextTetro(grid) {
-        console.log(this.getOccupiedCells(this.rotation, [this.position[0] , this.position[1]-18]))
-        this.getOccupiedCells(this.rotation, [this.position[0]-2 , this.position[1]-18]).forEach(cell => {
+        this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
             grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "next")
         })
     }
 
     unplotNextTetro(grid) {
-        this.getOccupiedCells(this.rotation, [this.position[0]-2 , this.position[1]-18]).forEach(cell => {
+        this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
             grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "next")
+        })
+    }
+
+    plotSaveTetro(grid) {
+        this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "save")
+        })
+    }
+
+    unplotSaveTetro(grid) {
+        this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "save")
         })
     }
 
@@ -149,27 +163,54 @@ export class Tetromino extends Polyomino {
     constructor(name) {
         switch(name) {
             case 'I' :
-                super([[-3/2, 1/2], [-1/2, 1/2], [1/2, 1/2], [3/2, 1/2]], [5,20], 0, name) ;
+                super([[-3/2, 1/2], [-1/2, 1/2], [1/2, 1/2], [3/2, 1/2]], [5,20], [2,2], 0, 1, name) ;
                 break ;
             case 'J':
-                super([[-1,1],[-1,0], [0,0], [1,0]] , [4.5, 20.5] , 0, name) ;
+                super([[-1,1],[-1,0], [0,0], [1,0]] , [4.5, 20.5] ,[1.5,1.5], 0, 0, name) ;
                 break ;
             case 'L':
-                super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 20.5] , 0, name) ;
+                super([[-1,0], [0,0], [1,0], [1,1]] , [4.5, 20.5] ,[1.5,1.5], 0, 0, name) ;
                 break ;
             case 'O':
-                super([[-1/2,1/2], [-1/2,-1/2], [1/2,-1/2], [1/2,1/2]] , [5, 21] , 0, name) ;
+                super([[-1/2,1/2], [-1/2,-1/2], [1/2,-1/2], [1/2,1/2]] , [5, 21] ,[2,2], 1, 1, name) ;
                 break ;    
             case 'S':
-                super([[-1,0], [0,0], [0,1], [1,1]] , [4.5, 20.5] , 0, name) ;
+                super([[-1,0], [0,0], [0,1], [1,1]] , [4.5, 20.5] , [1.5,1.5], 0, 0, name) ;
                 break ;
             case 'T':
-                super([[-1,0], [0,0], [1,0], [0,1]] , [4.5, 20.5] , 0, name) ;
+                super([[-1,0], [0,0], [1,0], [0,1]] , [4.5, 20.5] , [1.5,1.5], 0, 0, name) ;
                 break ;
             case 'Z':
-                super([[-1,1], [0,1], [0,0], [1,0]] , [4.5, 20.5] , 0, name) ;
+                super([[-1,1], [0,1], [0,0], [1,0]] , [4.5, 20.5] , [1.5,1.5], 0, 0, name) ;
                 break ;        
         }
+    }
+
+    reset() {
+        switch(this.name) {
+            case 'I' :
+                this.position = [5,20] ;
+                break ;
+            case 'J':
+                this.position = [4.5, 20.5] ;
+                break ;
+            case 'L':
+                this.position = [4.5, 20.5] ;
+                break ;
+            case 'O':
+                this.position =  [5, 21] ;
+                break ;    
+            case 'S':
+                this.position = [4.5, 20.5] ;
+                break ;
+            case 'T':
+                this.position = [4.5, 20.5] ;
+                break ;
+            case 'Z':
+                this.position = [4.5, 20.5] ;
+                break ;        
+        }
+        this.rotation = 0 ;
     }
 }
 

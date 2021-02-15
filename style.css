@@ -35,8 +35,18 @@ body {
 }
 
 #next-tetro {
-    height: calc(6*var(--cell-size));
-    width: calc(6 * var(--cell-size));
+    height: calc(4*var(--cell-size));
+    width: calc(3 * var(--cell-size));
+    background-color: grey;
+    display: grid;
+    grid-template-columns: repeat(6, var(--cell-size));
+    grid-template-rows: repeat(6, var(--cell-size));
+    margin: 10px;
+}
+
+#save-tetro {
+    height: calc(4*var(--cell-size));
+    width: calc(3 * var(--cell-size));
     background-color: grey;
     display: grid;
     grid-template-columns: repeat(6, var(--cell-size));
