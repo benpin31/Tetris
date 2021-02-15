@@ -48,17 +48,21 @@ export class GameParameters {
     reset() {
         this.timings = JSON.parse(JSON.stringify(InitialTimings)) ;
 
+        this.level = 1 ;
+
         this.gameOver = false ;
 
         this.score = {
             total: 0,
+            nbLines: 0,
             nbSingle: 0,
             nbDouble: 0,
             nbTripple: 0,
             nbTetris: 0,
             currentCombo: 0,
             longestCombo: 0
-        }   
+
+        }
     }
 
     updateNbLines(fullLines) {
@@ -100,14 +104,7 @@ export class GameParameters {
         this.timings.fallings.current = this.timings.fallings.value ;
     }
 
-    updateScore(fullLines) {
-        this.updateNbLines(fullLines) ;
-        this.updateCombos(fullLines) ;
-        this.increaseLevel() ;
-        this.increaseSpeed() ;
-
-        console.log(this.score.total)
-    
+    plotScore() {
         document.querySelector("#level > span").innerText = this.level;
         document.querySelector("#score-total > span").innerText = this.score.total;
         document.querySelector("#combo > span").innerText = this.score.currentCombo;
@@ -116,6 +113,14 @@ export class GameParameters {
         document.querySelector("#double > span").innerText = this.score.nbDouble;
         document.querySelector("#tripple > span").innerText = this.score.nbTripple;
         document.querySelector("#tetris > span").innerText = this.score.nbTetris;
+    }
 
+    updateScore(fullLines) {
+        this.updateNbLines(fullLines) ;
+        this.updateCombos(fullLines) ;
+        this.increaseLevel() ;
+        this.increaseSpeed() ;
+
+        this.plotScore() ;
     }
 }
