@@ -113,13 +113,26 @@ export class Polyomino {
 
     plot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
-            grid.addClasses(cell[0], cell[1], "tetro-"+this.name)
+            grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "gui")
         })
     }
 
     unplot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
-            grid.removeClasses(cell[0], cell[1], "tetro-"+this.name)
+            grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "gui")
+        })
+    }
+
+    plotNextTetro(grid) {
+        console.log(this.getOccupiedCells(this.rotation, [this.position[0] , this.position[1]-18]))
+        this.getOccupiedCells(this.rotation, [this.position[0]-2 , this.position[1]-18]).forEach(cell => {
+            grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "next")
+        })
+    }
+
+    unplotNextTetro(grid) {
+        this.getOccupiedCells(this.rotation, [this.position[0]-2 , this.position[1]-18]).forEach(cell => {
+            grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "next")
         })
     }
 
@@ -159,11 +172,6 @@ export class Tetromino extends Polyomino {
         }
     }
 }
-
-// export const generateRandomTetro = () => {
-//     const tetroList = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'] ;
-//     return new Tetromino(tetroList[Math.floor(Math.random() * tetroList.length)])
-// }
 
 export class TetrominosBag {
     constructor() {

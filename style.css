@@ -34,6 +34,16 @@ body {
     position: relative ;
 }
 
+#next-tetro {
+    height: calc(6*var(--cell-size));
+    width: calc(6 * var(--cell-size));
+    background-color: grey;
+    display: grid;
+    grid-template-columns: repeat(6, var(--cell-size));
+    grid-template-rows: repeat(6, var(--cell-size));
+    margin: 10px;
+}
+
 .cell {
     border: 1px solid black ;
 }

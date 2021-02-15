@@ -7,6 +7,8 @@ const grid = new Grid(10,20);
 
 const tetrominos = new TetrominosBag()
 let tetro = tetrominos.shuffle() ;
+let nextTetro = tetrominos.shuffle() ;
+nextTetro.plotNextTetro(grid)
 
 let canFall = true ;
 let canMove  ;
@@ -23,7 +25,10 @@ const tetroTransition = () => {
         param.timings.reachFloor.counter = 0 ;
         param.timings.fallings.counter = 0 ;
         canFall = true ;
-        tetro = tetrominos.shuffle() ;
+        nextTetro.unplotNextTetro(grid)
+        tetro = nextTetro ;
+        nextTetro = tetrominos.shuffle() ;
+        nextTetro.plotNextTetro(grid)
         let fullLines = grid.getFullLines() ;
         param.updateScore(fullLines) ;
         grid.clearGrid(fullLines) ;

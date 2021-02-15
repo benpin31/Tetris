@@ -15,6 +15,13 @@ export class Grid {
             guiGrid.unshift(guiCells.filter(cell => cell.classList.contains("row-"+(k+1)))) ;
         }
         this.guiGrid = guiGrid ;   
+
+        const nextTetroCells = [...document.querySelectorAll("#next-tetro > .cell")] ;
+        const nextTetroGrid = [] ;
+        for (let k = 0; k < 6 ; k++) {
+            nextTetroGrid.unshift(nextTetroCells.filter(cell => cell.classList.contains("row-"+(k+1)))) ;
+        }
+        this.nextTetroGrid = nextTetroGrid ;   
     }
 
     getPropriety(col, row) {
@@ -29,12 +36,21 @@ export class Grid {
         col < this.nCol && row < this.nRow ? this.grid[row][col] = value : "" ;
     }
 
-    addClasses(col, row, classeName) {
-        col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.add(classeName) : "" ;
+    addClasses(col, row, classeName, whichGrid) {
+        console.log(this.nextTetroGrid) ;
+        if(whichGrid === "gui") {
+            col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.add(classeName) : "" ;
+        } else if (whichGrid === "next") {
+            this.nextTetroGrid[row][col].classList.add(classeName)
+        }
     }
 
-    removeClasses(col, row, classeName) {
-        col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.remove(classeName) : "" ;
+    removeClasses(col, row, classeName, whichGrid) {
+        if(whichGrid === "gui") {
+            col < this.nCol && row < this.nRow ? this.guiGrid[row][col].classList.remove(classeName) : "" ;
+        } else if (whichGrid === "next") {
+            this.nextTetroGrid[row][col].classList.remove(classeName)
+        }
     }
 
     getFullLines() {
@@ -46,7 +62,7 @@ export class Grid {
 
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {
-                this.removeClasses(k,l,"tetro-"+this.getPropriety(k,l))
+                this.removeClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
             }
         }
 
@@ -57,7 +73,7 @@ export class Grid {
 
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {
-                this.addClasses(k,l,"tetro-"+this.getPropriety(k,l))
+                this.addClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
             }
         }
 
