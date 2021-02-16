@@ -68,7 +68,6 @@ export class Grid {
     }
 
     clearGrid(lines) {
-        //const fullLines = this.getFullLines() ;
 
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {

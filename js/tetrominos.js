@@ -138,13 +138,13 @@ export class Polyomino {
         })
     }
 
-    plotSaveTetro(grid) {
+    plotHoldTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
             grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "save")
         })
     }
 
-    unplotSaveTetro(grid) {
+    unplotHoldTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
             grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "save")
         })

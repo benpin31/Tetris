@@ -2,62 +2,82 @@ import {Grid} from "./grid.js"
 import {TetrominosBag} from "./tetrominos.js"
 import {GameParameters} from "./gameParameter.js"
 
-
+const param = new GameParameters() ;
 const grid = new Grid(10,20);
-
 const tetrominos = new TetrominosBag()
+
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
-let tetroSauv ;
-
 nextTetro.plotNextTetro(grid)
+let tetroHold ;
 
 let canFall = true ;
 let canMove  ;
 
-const param = new GameParameters() ;
 
 const key = {} ;
-window.addEventListener("keydown",(event) => {key[event.code] = event.type === "keydown"});
-window.addEventListener("keyup",(event) => {key[event.code] = event.type === "keydown"});
+window.addEventListener("keydown", event => key[event.code] = event.type === "keydown");
+window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
 
-const tetroTransition = () => {
+const nextStep = () => {
     if(!tetro.isAboveGrid()) {
         tetro.addToGrid(grid) ;
+
+        nextTetro.unplotNextTetro(grid)
+
+        tetro = nextTetro ;
+        nextTetro = tetrominos.shuffle() ;
+
+        nextTetro.plotNextTetro(grid)
+
         param.timings.reachFloor.counter = 0 ;
         param.timings.fallings.counter = 0 ;
         canFall = true ;
-        nextTetro.unplotNextTetro(grid)
-        tetro = nextTetro ;
-        nextTetro = tetrominos.shuffle() ;
-        nextTetro.plotNextTetro(grid)
+        param.tetroHoldCounter = 0 ;
+
         let fullLines = grid.getFullLines() ;
         param.updateScore(fullLines) ;
         grid.clearGrid(fullLines) ;
-        param.tetroSauvCounter = 0 ;
+
     } else {
         param.gameOver = true ;
     }
 }
 
-const move = (KeyArrowName, chainMoveName, callBackMove) => {
-    if(key[KeyArrowName] && param.timings.noActionFrame.counter >= param.timings.noActionFrame.value) {
-        param.timings.noActionFrame.chainMoveCounter[chainMoveName] ++ ;
+const gamerAction = (name) => {
+
+    let keyArrowName ;
+    let callbackMove ;
+    switch(name) {
+        case "rotate":
+            keyArrowName = "ArrowUp";
+            callbackMove = () => tetro.rotate(grid) ;
+            break ;
+        case "left":
+            keyArrowName = "ArrowLeft";
+            callbackMove = () => tetro.move("l",grid) ;
+            break ;
+        case "right":
+            keyArrowName = "ArrowRight";
+            callbackMove = () => tetro.move("r",grid) ;
+    }
+
+    if(key[keyArrowName] && param.timings.noActionFrame.counter >= param.timings.noActionFrame.value) {
         tetro.unplot(grid)
-        canMove = callBackMove() ;
+        canMove = callbackMove() ;
         tetro.plot(grid)
         if(canMove) {
             param.timings.reachFloor.counter = 0 ;
-            param.timings.noActionFrame.counter = param.timings.noActionFrame.chainMoveCounter[chainMoveName] > 1 ? 8 : 0 ;
+            param.timings.noActionFrame.counter = param.timings.noActionFrame.chainMoveCounter[name] > 0 ? 8 : 0 ;
             canFall = true ;
-            param.timings.noActionFrame.chainMoveCounter[chainMoveName] ++ ;
+            param.timings.noActionFrame.chainMoveCounter[name] ++ ;
         } else {
             canMove = true ;
-            param.timings.noActionFrame.chainMoveCounter[chainMoveName] = 0 ;
+            param.timings.noActionFrame.chainMoveCounter[name] = 0 ;
         } 
     } else {
-        if(!key[KeyArrowName]) {
-            param.timings.noActionFrame.chainMoveCounter[chainMoveName] = 0 ;
+        if(!key[keyArrowName]) {
+            param.timings.noActionFrame.chainMoveCounter[name] = 0 ;
         }
     }
 }
@@ -71,37 +91,42 @@ const accelerate = () => {
         }
     } else {
         if (key.ArrowDown) {
-            tetroTransition()
+            nextStep()
         } 
     }
 }
 
-const saveTetro = () => {
-    if(key.KeyS & param.tetroSauvCounter === 0 ) {
-        if(!tetroSauv) {
+const holdTetro = () => {
+
+    let tetroHoldSauv ;
+
+    if(key.KeyS & param.tetroHoldCounter === 0 ) {
+        canFall = true ;
+
+        if(!tetroHold) {
             tetro.unplot(grid) ;
             nextTetro.unplotNextTetro(grid) ;
-            tetroSauv = tetro ;
+            tetroHold = tetro ;
             tetro = nextTetro ;
             nextTetro =  tetrominos.shuffle() ;
             tetro.reset() ;
             nextTetro.reset() ;
-            tetroSauv.reset() ;
+            tetroHold.reset() ;
             tetro.plot(grid) ;
             nextTetro.plotNextTetro(grid) ;
-            tetroSauv.plotSaveTetro(grid) ;
-            param.tetroSauvCounter ++ ;
+            tetroHold.plotHoldTetro(grid) ;
+            param.tetroHoldCounter ++ ;
         } else {
             tetro.unplot(grid) ;
-            tetroSauv.unplotSaveTetro(grid) ;
-            let tetroSauv2 = tetroSauv ;
-            tetroSauv = tetro ;
-            tetro = tetroSauv2 ;
+            tetroHold.unplotHoldTetro(grid) ;
+            tetroHoldSauv = tetroHold ;
+            tetroHold = tetro ;
+            tetro = tetroHoldSauv ;
             tetro.reset() ;
-            tetroSauv.reset() ;
+            tetroHold.reset() ;
             tetro.plot(grid) ;
-            tetroSauv.plotSaveTetro(grid) ;
-            param.tetroSauvCounter ++ ;
+            tetroHold.plotHoldTetro(grid) ;
+            param.tetroHoldCounter ++ ;
         }
     }  
 }
@@ -109,32 +134,31 @@ const saveTetro = () => {
 const game = () => {
     if (!param.gameOver) {
 
-        move("ArrowUp", "rotate", () => tetro.rotate(grid)) ;
-        move("ArrowLeft", "left", () => tetro.move("l",grid)) ;
-        move("ArrowRight", "right", () => tetro.move("r",grid)) ;
+        gamerAction("rotate") ;
+        gamerAction("left") ;
+        gamerAction("right") ;
         accelerate() ;
-        saveTetro() ;
+        holdTetro() ;
 
-        if (canFall && param.timings.fallings.counter >= param.timings.fallings.current) {
-            tetro.unplot(grid)
-            canFall = tetro.move("d", grid) ;
-            tetro.plot(grid)
+        param.timings.noActionFrame.counter++ ;
 
-            param.timings.fallings.counter = 0 ;
+        if(canFall) {
+            if (param.timings.fallings.counter >= param.timings.fallings.current) {
+                tetro.unplot(grid)
+                canFall = tetro.move("d", grid) ;
+                tetro.plot(grid)
+    
+                param.timings.fallings.counter = 0 ;
+            } else {
+                param.timings.fallings.counter++ ;
+            }
         } else {
-            canFall ? param.timings.fallings.counter++ : "" ;
-        }
-
-        if (!canFall) {
             if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
                 param.timings.reachFloor.counter++ ;
             } else {
-                console.log("Je suis passé par ici")
-                tetroTransition() ;
+                nextStep() ;
             }
-        } 
-
-        param.timings.noActionFrame.counter++ ;
+        }
 
     } else {
         document.querySelector("#game-over-message").classList.remove("is-not-visible")
@@ -146,7 +170,7 @@ const game = () => {
             document.querySelector("#game-over-message").classList.add("is-not-visible")
         }
     }
-    
+
     window.requestAnimationFrame(game)
 }
 

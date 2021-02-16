@@ -24,6 +24,17 @@ const InitialTimings =
             } ,
         }
 
+const initialScore = {
+    total: 0,
+    nbLines: 0,
+    nbSingle: 0,
+    nbDouble: 0,
+    nbTripple: 0,
+    nbTetris: 0,
+    currentCombo: 0,
+    longestCombo: 0
+}
+
 export class GameParameters {
     constructor() {
         this.timings = JSON.parse(JSON.stringify(InitialTimings)) ;
@@ -32,19 +43,9 @@ export class GameParameters {
 
         this.gameOver = false ;
 
-        this.score = {
-            total: 0,
-            nbLines: 0,
-            nbSingle: 0,
-            nbDouble: 0,
-            nbTripple: 0,
-            nbTetris: 0,
-            currentCombo: 0,
-            longestCombo: 0
+        this.score = JSON.parse(JSON.stringify(initialScore))
 
-        }
-
-        this.tetroSauvCounter = 0 ;
+        this.tetroHoldCounter = 0 ;
     }   
 
     reset() {
@@ -54,19 +55,9 @@ export class GameParameters {
 
         this.gameOver = false ;
 
-        this.score = {
-            total: 0,
-            nbLines: 0,
-            nbSingle: 0,
-            nbDouble: 0,
-            nbTripple: 0,
-            nbTetris: 0,
-            currentCombo: 0,
-            longestCombo: 0
+        this.score = JSON.parse(JSON.stringify(initialScore))
 
-        }
-
-        this.tetroSauvCounter = 0 ;
+        this.tetroHoldCounter = 0 ;
     }
 
     updateNbLines(fullLines) {
