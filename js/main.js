@@ -14,10 +14,7 @@ let tetroHold ;
 let canFall = true ;
 let canMove  ;
 
-
 const key = {} ;
-window.addEventListener("keydown", event => key[event.code] = event.type === "keydown");
-window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
 
 const nextStep = () => {
     if(!tetro.isAboveGrid()) {
@@ -174,5 +171,17 @@ const game = () => {
     window.requestAnimationFrame(game)
 }
 
-game()
+window.addEventListener("keydown", 
+    event => {
+        console.log("toto") ;
+        key[event.code] = event.type === "keydown" ;
+        if (!param.hasStarted) {
+            param.hasStarted = true ;
+            game() ;
+            document.querySelector("#home-page").classList.add("is-not-visible")
+        }
+    });
+window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
+
+
 

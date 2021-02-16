@@ -22,6 +22,7 @@ const InitialTimings =
                     rotate: 0
                 }
             } ,
+
         }
 
 const initialScore = {
@@ -46,6 +47,8 @@ export class GameParameters {
         this.score = JSON.parse(JSON.stringify(initialScore))
 
         this.tetroHoldCounter = 0 ;
+
+        this.hasStarted = false ;
     }   
 
     reset() {
