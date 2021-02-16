@@ -6,6 +6,8 @@ const param = new GameParameters() ;
 const grid = new Grid(10,20);
 const tetrominos = new TetrominosBag()
 
+console.log(param.level)
+
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
 nextTetro.plotNextTetro(grid)
@@ -21,6 +23,7 @@ window.addEventListener("keyup", event => key[event.code] = event.type === "keyd
 
 const nextStep = () => {
     if(!tetro.isAboveGrid()) {
+        canFall = true ;
         tetro.addToGrid(grid) ;
 
         nextTetro.unplotNextTetro(grid)
@@ -32,7 +35,6 @@ const nextStep = () => {
 
         param.timings.reachFloor.counter = 0 ;
         param.timings.fallings.counter = 0 ;
-        canFall = true ;
         param.tetroHoldCounter = 0 ;
 
         let fullLines = grid.getFullLines() ;

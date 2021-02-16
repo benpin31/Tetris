@@ -91,12 +91,15 @@ export class GameParameters {
     }
 
     increaseLevel() {
-        this.level = this.level <= 10 ? Math.floor(this.score.nbLines/10)+1 : 10 ;
+        this.level = this.level <= 9 ? Math.floor(this.score.nbLines/10)+1 : 10 ;
     }
 
     increaseSpeed() {
         this.timings.fallings.value = initialSpeed-(this.level-1)*(initialSpeed-2)/9 ;
         this.timings.fallings.current = this.timings.fallings.value ;
+        console.log(this.timings.fallings.value)
+        console.log(this.level)
+
     }
 
     plotScore() {
