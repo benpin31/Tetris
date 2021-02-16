@@ -107,36 +107,35 @@ const saveTetro = () => {
 }
 
 const game = () => {
-
-    move("ArrowUp", "rotate", () => tetro.rotate(grid)) ;
-    move("ArrowLeft", "left", () => tetro.move("l",grid)) ;
-    move("ArrowRight", "right", () => tetro.move("r",grid)) ;
-    accelerate() ;
-    saveTetro() ;
-
-
-    if (canFall && param.timings.fallings.counter >= param.timings.fallings.current) {
-        tetro.unplot(grid)
-        canFall = tetro.move("d", grid) ;
-        tetro.plot(grid)
-
-        param.timings.fallings.counter = 0 ;
-    } else {
-        canFall ? param.timings.fallings.counter++ : "" ;
-    }
-
-    if (!canFall) {
-        if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
-            param.timings.reachFloor.counter++ ;
-        } else {
-            tetroTransition() ;
-        }
-    } 
-
-    param.timings.noActionFrame.counter++ ;
-
     if (!param.gameOver) {
-        window.requestAnimationFrame(game);
+
+        move("ArrowUp", "rotate", () => tetro.rotate(grid)) ;
+        move("ArrowLeft", "left", () => tetro.move("l",grid)) ;
+        move("ArrowRight", "right", () => tetro.move("r",grid)) ;
+        accelerate() ;
+        saveTetro() ;
+
+        if (canFall && param.timings.fallings.counter >= param.timings.fallings.current) {
+            tetro.unplot(grid)
+            canFall = tetro.move("d", grid) ;
+            tetro.plot(grid)
+
+            param.timings.fallings.counter = 0 ;
+        } else {
+            canFall ? param.timings.fallings.counter++ : "" ;
+        }
+
+        if (!canFall) {
+            if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
+                param.timings.reachFloor.counter++ ;
+            } else {
+                console.log("Je suis passé par ici")
+                tetroTransition() ;
+            }
+        } 
+
+        param.timings.noActionFrame.counter++ ;
+
     } else {
         document.querySelector("#game-over-message").classList.remove("is-not-visible")
         if(key.Space) {
@@ -146,8 +145,9 @@ const game = () => {
             canFall = true ;
             document.querySelector("#game-over-message").classList.add("is-not-visible")
         }
-        window.requestAnimationFrame(game) ;
     }
+    
+    window.requestAnimationFrame(game)
 }
 
 game()
