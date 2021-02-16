@@ -42,6 +42,16 @@ body {
     margin: 5vh ; 
 }
 
+#next-hold {
+    display: flex ;
+    flex-direction: column;
+    max-width: 100% ;
+}
+
+/* @media (max-width: 1000px) {
+
+  } */
+
 .title {
     background-color: black !important;
 }
@@ -52,7 +62,7 @@ body {
 }
 
 .aside {
-    width: calc(10 * var(--cell-size));
+    width: calc(10 * var(--cell-size)); 
 }
 
 .aside-tetro {
@@ -63,17 +73,13 @@ body {
     grid-template-rows: repeat(4, var(--cell-size));
 }
 
-.next-hold {
-    display: flex ;
-    flex-direction: column;
-    max-width: 100% ;
-}
+
 
 #hold, #next {
     width: calc(5 * var(--cell-size));
 }
 
-#score > div {
+#score div {
     margin: 10px 0;
 } 
 
@@ -119,10 +125,10 @@ body {
 
 
 .tetro {
-    background-image: url("Image/rock-texture.png");
-    background-size: 1200%;
+    background-image: url("Image/pixel-block.png");
+    background-size: cover;
     background-repeat: no-repeat;
-    border: 2px solid rgba(0,0,0,.2) 
+    /* border: 2px solid rgba(0,0,0,.2)  */
 }
 
 .tetro-I {

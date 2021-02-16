@@ -72,6 +72,8 @@ export class Grid {
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {
                 this.removeClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
+                this.removeClasses(k,l, "tetro", "gui")
+
             }
         }
 
@@ -82,7 +84,10 @@ export class Grid {
 
         for(let k = 0 ; k < this.nCol ; k++) {
             for (let l = 0 ; l < this.nRow ; l++) {
-                this.addClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
+                if(this.getPropriety(k,l) !== "E") {
+                    this.addClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
+                    this.addClasses(k,l,"tetro", "gui")
+                }
             }
         }
 
