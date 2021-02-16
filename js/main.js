@@ -16,6 +16,14 @@ let canMove  ;
 
 const key = {} ;
 
+const theme = new Audio('./audio/tetris-theme.mp3'); 
+theme.loop = true ;
+const explodeSound = new Audio('./audio/Explosion.mp3'); 
+const fallSound = new Audio('./audio/punch.mp3'); 
+const gameOverSound = new Audio('./audio/game-over.wav'); 
+const holdSound = new Audio("./audio/holdSound.mp3")
+
+
 const nextStep = () => {
     if(!tetro.isAboveGrid()) {
         canFall = true ;
@@ -33,11 +41,21 @@ const nextStep = () => {
         param.tetroHoldCounter = 0 ;
 
         let fullLines = grid.getFullLines() ;
+        if(fullLines.length > 0) {
+            explodeSound.currentTime = 0
+            explodeSound.play() ;
+        } else {
+            fallSound.currentTime = 0
+            fallSound.play() ;
+        }
         param.updateScore(fullLines) ;
         grid.clearGrid(fullLines) ;
 
     } else {
         param.gameOver = true ;
+        theme.pause() ;
+        gameOverSound.currentTime = 0
+        gameOverSound.play() ;
     }
 }
 
@@ -98,6 +116,9 @@ const holdTetro = () => {
     let tetroHoldSauv ;
 
     if(key.KeyS & param.tetroHoldCounter === 0 ) {
+        holdSound.currentTime = 0 ;
+        holdSound.play() ;
+
         canFall = true ;
 
         if(!tetroHold) {
@@ -165,6 +186,10 @@ const game = () => {
             param.plotScore() ;
             canFall = true ;
             document.querySelector("#game-over-message").classList.add("is-not-visible")
+            gameOverSound.pause() ;
+            theme.currentTime = 0 ;
+            theme.play() ;
+            console.log(theme.loop)
         }
     }
 
@@ -179,6 +204,7 @@ window.addEventListener("keydown",
             param.hasStarted = true ;
             game() ;
             document.querySelector("#home-page").classList.add("is-not-visible")
+            theme.play()
         }
     });
 window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
