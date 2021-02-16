@@ -6,8 +6,6 @@ const param = new GameParameters() ;
 const grid = new Grid(10,20);
 const tetrominos = new TetrominosBag()
 
-console.log(param.level)
-
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
 nextTetro.plotNextTetro(grid)

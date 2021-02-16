@@ -116,36 +116,42 @@ export class Polyomino {
 
     plot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
+            grid.addClasses(cell[0], cell[1], "tetro", "gui")
             grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "gui")
         })
     }
 
     unplot(grid) {
         this.getOccupiedCells(this.rotation, this.position).forEach(cell => {
+            grid.removeClasses(cell[0], cell[1], "tetro", "gui")
             grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "gui")
         })
     }
 
     plotNextTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.addClasses(cell[0], cell[1], "tetro", "next")
             grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "next")
         })
     }
 
     unplotNextTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.removeClasses(cell[0], cell[1], "tetro", "next")
             grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "next")
         })
     }
 
     plotHoldTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.addClasses(cell[0], cell[1], "tetro", "save")
             grid.addClasses(cell[0], cell[1], "tetro-"+this.name, "save")
         })
     }
 
     unplotHoldTetro(grid) {
         this.getOccupiedCells(this.rotationNext, [this.positionNext[0] , this.positionNext[1]]).forEach(cell => {
+            grid.removeClasses(cell[0], cell[1], "tetro", "save")
             grid.removeClasses(cell[0], cell[1], "tetro-"+this.name, "save")
         })
     }

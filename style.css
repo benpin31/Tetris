@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 /* Constants */ 
 
 :root {
-    --cell-size : calc(100vh / 20) ;
+    --cell-size : calc(90vh / 20) ;
     --color-I : #739ee9 ;
     --color-J : #0341AE ;
     --color-S : #72CB3B ;
@@ -11,52 +13,69 @@
     --color-T: #ae18cc ;
 }
 
-/* */
-
 * {
     padding: 0 ;
     margin: 0 ;
     box-sizing: border-box ;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 15px;
 }
 
 body {
     display: flex ;
     justify-content: center;
+    color: white ;
+
+    background-image: url("./Image/image.png");
+    background-position: center;
+    background-size: cover;
 }
 
 #grid {
-    height: calc(20*var(--cell-size));
+    height: calc(20*var(--cell-size)) ; /*calc(20*var(--cell-size) );*/
     width: calc(10 * var(--cell-size));
-    background-color: grey;
+    background-color: black;
     display: grid;
     grid-template-columns: repeat(10, var(--cell-size));
     grid-template-rows: repeat(20, var(--cell-size));
     position: relative ;
+    margin: 5vh ; 
 }
 
-#next-tetro {
+.title {
+    background-color: black !important;
+}
+
+.container {
+    background-color: black !important; 
+    margin: 5vh 0 !important;
+}
+
+.aside {
+    width: calc(10 * var(--cell-size));
+}
+
+.aside-tetro {
     height: calc(4*var(--cell-size));
     width: calc(3 * var(--cell-size));
-    background-color: grey;
     display: grid;
-    grid-template-columns: repeat(6, var(--cell-size));
-    grid-template-rows: repeat(6, var(--cell-size));
-    margin: 10px;
+    grid-template-columns: repeat(3, var(--cell-size));
+    grid-template-rows: repeat(4, var(--cell-size));
 }
 
-#save-tetro {
-    height: calc(4*var(--cell-size));
-    width: calc(3 * var(--cell-size));
-    background-color: grey;
-    display: grid;
-    grid-template-columns: repeat(6, var(--cell-size));
-    grid-template-rows: repeat(6, var(--cell-size));
-    margin: 10px;
+.next-hold {
+    display: flex ;
+    flex-direction: column;
+    max-width: 100% ;
 }
 
-.cell {
-    border: 1px solid black ;
+#hold, #next {
+    width: calc(5 * var(--cell-size));
 }
+
+#score > div {
+    margin: 10px 0;
+} 
 
 .column-1 {
     grid-column: 1 ;
@@ -96,6 +115,14 @@ body {
 
 .column-10 {
     grid-column: 10 ;
+}
+
+
+.tetro {
+    background-image: url("Image/rock-texture.png");
+    background-size: 1200%;
+    background-repeat: no-repeat;
+    border: 2px solid rgba(0,0,0,.2) 
 }
 
 .tetro-I {
@@ -139,7 +166,7 @@ body {
 }
 
 #game-over-message {
-    background-color: yellow;
+    text-align: center ;
 }
 
 .is-not-visible {

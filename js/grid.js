@@ -23,7 +23,7 @@ export class Grid {
         }
         this.nextTetroGrid = nextTetroGrid ;   
 
-        const saveTetroCells = [...document.querySelectorAll("#save-tetro > .cell")] ;
+        const saveTetroCells = [...document.querySelectorAll("#hold-tetro > .cell")] ;
         const saveTetroGrid = [] ;
         for (let k = 0; k < 4 ; k++) {
             saveTetroGrid.unshift(saveTetroCells.filter(cell => cell.classList.contains("row-"+(k+1)))) ;

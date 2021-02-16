@@ -97,20 +97,18 @@ export class GameParameters {
     increaseSpeed() {
         this.timings.fallings.value = initialSpeed-(this.level-1)*(initialSpeed-2)/9 ;
         this.timings.fallings.current = this.timings.fallings.value ;
-        console.log(this.timings.fallings.value)
-        console.log(this.level)
 
     }
 
     plotScore() {
-        document.querySelector("#level > span").innerText = this.level;
-        document.querySelector("#score-total > span").innerText = this.score.total;
-        document.querySelector("#combo > span").innerText = this.score.currentCombo;
-        document.querySelector("#max-combo > span").innerText = this.score.longestCombo;
-        document.querySelector("#single > span").innerText = this.score.nbSingle;
-        document.querySelector("#double > span").innerText = this.score.nbDouble;
-        document.querySelector("#tripple > span").innerText = this.score.nbTripple;
-        document.querySelector("#tetris > span").innerText = this.score.nbTetris;
+        document.querySelectorAll(".level > span").forEach(span => span.innerText = this.level);
+        document.querySelectorAll(".score-total > span").forEach(span => span.innerText = this.score.total);
+        document.querySelectorAll(".combo > span").forEach(span => span.innerText = this.score.currentCombo);
+        document.querySelectorAll(".max-combo > span").forEach(span => span.innerText = this.score.longestCombo);
+        document.querySelectorAll(".single > span").forEach(span => span.innerText = this.score.nbSingle);
+        document.querySelectorAll(".double > span").forEach(span => span.innerText = this.score.nbDouble);
+        document.querySelectorAll(".tripple > span").forEach(span => span.innerText = this.score.nbTripple);
+        document.querySelectorAll(".tetris > span").forEach(span => span.innerText = this.score.nbTetris);
     }
 
     updateScore(fullLines) {
