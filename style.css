@@ -126,7 +126,7 @@ body {
 
 .tetro {
     background-image: url("Image/pixel-block.png");
-    background-size: cover;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     /* border: 2px solid rgba(0,0,0,.2)  */
 }
