@@ -210,4 +210,37 @@ window.addEventListener("keydown",
 window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
 
 
+const touchMoveObject = {threshold: 100, lastStart: Date.now()}
 
+window.addEventListener("touchstart", event => {
+    touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
+    touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
+
+    if(Date.now() - touchMoveObject.lastStart < 1000) {
+        key["ArrowUp"] = true ;
+    }
+
+    touchMoveObject.lastStart = Date.now() ;
+});
+
+window.addEventListener("touchmove", event => {
+    touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
+    touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
+
+    touchMoveObject.isToucheMove = true
+    console.log(touchMoveObject["yStart"])
+
+    if(Math.abs(touchMoveObject["yCurrent"] - touchMoveObject["yStart"]) > touchMoveObject.threshold) {
+        key["KeyS"] = true ;
+    }
+
+});
+
+window.addEventListener("touchend", event => { 
+    event.preventDefault();
+   
+    key["ArrowUp"] = false ; 
+    key["KeyS"] = false ;
+    touchMoveObject.isToucheMove = false ;
+
+})
