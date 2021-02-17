@@ -17,7 +17,6 @@ let canMove  ;
 const key = {} ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
-theme.volume = 0 ;
 theme.loop = true ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
@@ -84,7 +83,9 @@ const gamerAction = (name) => {
         tetro.plot(grid)
         if(canMove) {
             param.timings.reachFloor.counter = 0 ;
-            param.timings.noActionFrame.counter = param.timings.noActionFrame.chainMoveCounter[name] > 0 ? 8 : 0 ;
+            param.timings.noActionFrame.counter = 
+                param.timings.noActionFrame.chainMoveCounter[name] === 0 ? 0 : 
+                name === "rotate" ? 3 : 8 ;
             canFall = true ;
             param.timings.noActionFrame.chainMoveCounter[name] ++ ;
         } else {
