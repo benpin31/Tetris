@@ -28,7 +28,7 @@ body {
     justify-content: center;
     color: white ;
 
-    background-image: url("./Image/image.png");
+    background-image: url("./Image/background.png");
     background-position: center;
     background-size: cover;
 
@@ -136,6 +136,10 @@ body {
         padding-top : calc(0.3*var(--cell-size)) ;
     }
 
+    .container > div {
+        padding-bottom: 0px;
+    }
+
     body {
         flex-direction: column;
         justify-content: flex-start;
@@ -149,7 +153,7 @@ body {
     }
 
     .aside-tetro {
-        height: 100% ;
+        height: calc(2* var(--cell-size));
         width: calc(1.5* var(--cell-size));
         display: grid;
         grid-template-columns: calc(0.5*var(--cell-size));

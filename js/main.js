@@ -250,7 +250,6 @@ window.addEventListener("touchstart", event => {
             !key["ArrowUp"] ? touchMoveObject.maintainCounter++ : "" ;
             if (touchMoveObject.maintainCounter >= 1) {
                 key["ArrowDown"] = true ;
-                console.log(key["ArrowDown"])
             }
         }, 200)
     

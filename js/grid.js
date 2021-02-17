@@ -80,7 +80,6 @@ export class Grid {
             for (let l = 0 ; l < this.nCol ; l++) {
                 if(lines.includes(k)) {
                     this.addClasses(l,k,"destruct", "gui")
-                    console.log("toto")
                 }
             }
         }
@@ -90,7 +89,6 @@ export class Grid {
                 for (let l = 0 ; l < this.nCol ; l++) {
                     if(lines.includes(k)) {
                         this.removeClasses(l,k,"destruct", "gui")
-                        console.log("toto")
                     }
                 }
             }

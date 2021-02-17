@@ -98,7 +98,7 @@ export class GameParameters {
     }
 
     increaseSpeed() {
-        this.timings.fallings.value = initialSpeed-(this.level-1)*(initialSpeed-2)/9 ;
+        this.timings.fallings.value = initialSpeed/1.44**(this.level-1)//(this.level-1)*(initialSpeed-2)/9 ;
         this.timings.fallings.current = this.timings.fallings.value ;
 
     }
