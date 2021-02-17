@@ -244,6 +244,8 @@ const touchMoveObject = {
 console.log(touchMoveObject.gridDim)
 
 document.addEventListener("touchstart", event => {
+    event.preventDefault();
+
     touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
     touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
 
@@ -253,9 +255,11 @@ document.addEventListener("touchstart", event => {
     }
 
     touchMoveObject.lastStart = Date.now() ;
-});
+}, false);
 
 document.addEventListener("touchmove", event => {
+    event.preventDefault();
+
     touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
     touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
 
@@ -283,7 +287,7 @@ document.addEventListener("touchmove", event => {
         console.log("swipeRight", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
     }
 
-});
+}, false);
 
 document.addEventListener("touchend", event => { 
     event.preventDefault();
@@ -300,6 +304,10 @@ document.addEventListener("touchend", event => {
         document.querySelector("#home-page").classList.add("is-not-visible")
         theme.play()
     }
-
-
 })
+
+document.addEventListener("touchcancel", function (event) {
+    event.preventDefault();
+    console.log("touchcancel: event.preventDefault()");
+}, false);
+
