@@ -17,6 +17,7 @@ let canMove  ;
 const key = {} ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
+theme.volume = 0 ;
 theme.loop = true ;
 const explodeSound = new Audio('./audio/Explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
@@ -212,7 +213,6 @@ const game = () => {
             gameOverSound.pause() ;
             theme.currentTime = 0 ;
             theme.play() ;
-            console.log(theme.loop)
         }
     }
 
@@ -221,7 +221,6 @@ const game = () => {
 
 window.addEventListener("keydown", 
     event => {
-        console.log("toto") ;
         key[event.code] = event.type === "keydown" ;
         if (!param.hasStarted) {
             param.hasStarted = true ;
@@ -239,26 +238,37 @@ const touchMoveObject = {
         grid: document.querySelector("#grid").offsetWidth/10
     }, 
     lastStart: Date.now(),
+    maintainInterval: 0,
+    maintainCounter: 0
 }
 
-console.log(touchMoveObject.gridDim)
-
 window.addEventListener("touchstart", event => {
-    event.preventDefault();
+
+    touchMoveObject.maintainInterval = setInterval(() => {
+        touchMoveObject.maintainCounter++ ;
+        if (touchMoveObject.maintainCounter >= 1) {
+            key["ArrowDown"] = true ;
+            console.log(key["ArrowDown"])
+        }
+    }, 200)
+
 
     touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
     touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
 
     if(Date.now() - touchMoveObject.lastStart < 200) {
-        console.log("rotate")
         key["ArrowUp"] = true ;
     }
+
+
 
     touchMoveObject.lastStart = Date.now() ;
 });
 
 window.addEventListener("touchmove", event => {
-    event.preventDefault();
+
+    clearInterval(touchMoveObject.maintainInterval) ;
+    key["ArrowDown"] = false ;
 
     touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
     touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
@@ -266,37 +276,35 @@ window.addEventListener("touchmove", event => {
     touchMoveObject.isToucheMove = true
 
     if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] < -touchMoveObject.threshold.default) {
-        console.log("swipeUp")
         key["KeyS"] = true ;
     }
 
     if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] > touchMoveObject.threshold.default) {
-        console.log("swipeDown")
         key["ArrowDown"] = true ;
     }
 
     if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
         key["swipeLeft"] = true ;
         touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
-        console.log("swipeLeft", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
     }
 
     if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
         key["swipeRight"] = true ;
         touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
-        console.log("swipeRight", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
     }
 
 });
 
 window.addEventListener("touchend", event => { 
-    event.preventDefault();
+    event.preventDefault()
    
     key["ArrowUp"] = false ; 
     key["ArrowDown"] = false ;
     key["KeyS"] = false ;
     key["swipeLeft"] = false ;
     key["swipeRight"] = false ;
+    clearInterval(touchMoveObject.maintainInterval)
+    touchMoveObject.maintainCounter = 0 ;
 
     if (!param.hasStarted) {
         param.hasStarted = true ;
@@ -305,9 +313,4 @@ window.addEventListener("touchend", event => {
         theme.play()
     }
 })
-
-window.addEventListener("touchcancel", function (event) {
-    event.preventDefault();
-    console.log("touchcancel: event.preventDefault()");
-});
 
