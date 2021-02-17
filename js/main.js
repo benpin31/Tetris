@@ -103,19 +103,37 @@ const gamerSwipeAction = (name) => {
     if(name === "left") {
         if(key["swipeLeft"]) {        
             tetro.unplot(grid)
-            tetro.move("l",grid) ;
+            canMove = tetro.move("l",grid) ;
             tetro.plot(grid)
             key["swipeLeft"] = false ;
-        }
+
+            if (canMove) {
+                canFall = true ;
+            } else {
+                canMove = true ;
+            }
+        
+        } 
+
+
     } else {
         if(key["swipeRight"]) {
             tetro.unplot(grid)
-            tetro.move("r",grid) ;
+            canMove = tetro.move("r",grid) ;
             tetro.plot(grid)
             key["swipeRight"] = false ;
+            
+            if (canMove) {
+                canFall = true ;
+            } else {
+                canMove = true ;
+            }
+        
 
         }
     }
+
+
 }
 
 const accelerate = () => {
