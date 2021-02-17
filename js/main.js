@@ -243,7 +243,7 @@ const touchMoveObject = {
 
 console.log(touchMoveObject.gridDim)
 
-window.addEventListener("touchstart", event => {
+document.addEventListener("touchstart", event => {
     touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
     touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
 
@@ -255,7 +255,7 @@ window.addEventListener("touchstart", event => {
     touchMoveObject.lastStart = Date.now() ;
 });
 
-window.addEventListener("touchmove", event => {
+document.addEventListener("touchmove", event => {
     touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
     touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
 
@@ -285,7 +285,7 @@ window.addEventListener("touchmove", event => {
 
 });
 
-window.addEventListener("touchend", event => { 
+document.addEventListener("touchend", event => { 
     event.preventDefault();
    
     key["ArrowUp"] = false ; 
