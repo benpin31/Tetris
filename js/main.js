@@ -97,6 +97,25 @@ const gamerAction = (name) => {
     }
 }
 
+const gamerSwipeAction = (name) => {
+    if(name === "left") {
+        if(key["swipeLeft"]) {        
+            tetro.unplot(grid)
+            tetro.move("l",grid) ;
+            tetro.plot(grid)
+            key["swipeLeft"] = false ;
+        }
+    } else {
+        if(key["swipeRight"]) {
+            tetro.unplot(grid)
+            tetro.move("r",grid) ;
+            tetro.plot(grid)
+            key["swipeRight"] = false ;
+
+        }
+    }
+}
+
 const accelerate = () => {
     if(canFall) {
         if (key.ArrowDown) {
@@ -155,6 +174,10 @@ const game = () => {
         gamerAction("rotate") ;
         gamerAction("left") ;
         gamerAction("right") ;
+
+        gamerSwipeAction("left") ;
+        gamerSwipeAction("right") ;
+
         accelerate() ;
         holdTetro() ;
 
@@ -210,13 +233,22 @@ window.addEventListener("keydown",
 window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
 
 
-const touchMoveObject = {threshold: 100, lastStart: Date.now()}
+const touchMoveObject = {
+    threshold: {
+        default: 100,
+        grid: document.querySelector("#grid").offsetWidth/10
+    }, 
+    lastStart: Date.now(),
+}
+
+console.log(touchMoveObject.gridDim)
 
 window.addEventListener("touchstart", event => {
     touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
     touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
 
-    if(Date.now() - touchMoveObject.lastStart < 1000) {
+    if(Date.now() - touchMoveObject.lastStart < 200) {
+        console.log("rotate")
         key["ArrowUp"] = true ;
     }
 
@@ -228,10 +260,27 @@ window.addEventListener("touchmove", event => {
     touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
 
     touchMoveObject.isToucheMove = true
-    console.log(touchMoveObject["yStart"])
 
-    if(Math.abs(touchMoveObject["yCurrent"] - touchMoveObject["yStart"]) > touchMoveObject.threshold) {
+    if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] < -touchMoveObject.threshold.default) {
+        console.log("swipeUp")
         key["KeyS"] = true ;
+    }
+
+    if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] > touchMoveObject.threshold.default) {
+        console.log("swipeDown")
+        key["ArrowDown"] = true ;
+    }
+
+    if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
+        key["swipeLeft"] = true ;
+        touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+        console.log("swipeLeft", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
+    }
+
+    if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
+        key["swipeRight"] = true ;
+        touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+        console.log("swipeRight", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
     }
 
 });
@@ -240,7 +289,17 @@ window.addEventListener("touchend", event => {
     event.preventDefault();
    
     key["ArrowUp"] = false ; 
+    key["ArrowDown"] = false ;
     key["KeyS"] = false ;
-    touchMoveObject.isToucheMove = false ;
+    key["swipeLeft"] = false ;
+    key["swipeRight"] = false ;
+
+    if (!param.hasStarted) {
+        param.hasStarted = true ;
+        game() ;
+        document.querySelector("#home-page").classList.add("is-not-visible")
+        theme.play()
+    }
+
 
 })
