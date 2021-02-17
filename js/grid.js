@@ -73,11 +73,31 @@ export class Grid {
             for (let l = 0 ; l < this.nRow ; l++) {
                 this.removeClasses(k,l,"tetro-"+this.getPropriety(k,l), "gui")
                 this.removeClasses(k,l, "tetro", "gui")
-
             }
         }
 
+        for (let k = 0 ; k < this.nRow ; k++) {
+            for (let l = 0 ; l < this.nCol ; l++) {
+                if(lines.includes(k)) {
+                    this.addClasses(l,k,"destruct", "gui")
+                    console.log("toto")
+                }
+            }
+        }
+
+        setTimeout(() => {
+            for (let k = 0 ; k < this.nRow ; k++) {
+                for (let l = 0 ; l < this.nCol ; l++) {
+                    if(lines.includes(k)) {
+                        this.removeClasses(l,k,"destruct", "gui")
+                        console.log("toto")
+                    }
+                }
+            }
+        }, 300)
+
         this.grid = this.grid.filter((row, index) => !lines.includes(index))
+
         for (let k = 0 ; k < lines.length ; k++) {
             this.grid.push("E".repeat(this.nCol).split(""))
         }
@@ -90,6 +110,7 @@ export class Grid {
                 }
             }
         }
+
 
     }
 

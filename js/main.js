@@ -244,53 +244,58 @@ const touchMoveObject = {
 
 window.addEventListener("touchstart", event => {
 
-    touchMoveObject.maintainInterval = setInterval(() => {
-        touchMoveObject.maintainCounter++ ;
-        if (touchMoveObject.maintainCounter >= 1) {
-            key["ArrowDown"] = true ;
-            console.log(key["ArrowDown"])
+    if (param.hasStarted) {
+        touchMoveObject.maintainInterval = setInterval(() => {
+            !key["ArrowUp"] ? touchMoveObject.maintainCounter++ : "" ;
+            if (touchMoveObject.maintainCounter >= 1) {
+                key["ArrowDown"] = true ;
+                console.log(key["ArrowDown"])
+            }
+        }, 200)
+    
+    
+        touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
+        touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
+    
+        if(Date.now() - touchMoveObject.lastStart < 200) {
+            key["ArrowUp"] = true ;
         }
-    }, 200)
-
-
-    touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
-    touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
-
-    if(Date.now() - touchMoveObject.lastStart < 200) {
-        key["ArrowUp"] = true ;
+    
+    
+    
+        touchMoveObject.lastStart = Date.now() ;
     }
 
-
-
-    touchMoveObject.lastStart = Date.now() ;
 });
 
 window.addEventListener("touchmove", event => {
 
-    clearInterval(touchMoveObject.maintainInterval) ;
-    key["ArrowDown"] = false ;
-
-    touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
-    touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
-
-    touchMoveObject.isToucheMove = true
-
-    if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] < -touchMoveObject.threshold.default) {
-        key["KeyS"] = true ;
-    }
-
-    if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] > touchMoveObject.threshold.default) {
-        key["ArrowDown"] = true ;
-    }
-
-    if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
-        key["swipeLeft"] = true ;
-        touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
-    }
-
-    if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
-        key["swipeRight"] = true ;
-        touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+    if (param.hasStarted) {
+        clearInterval(touchMoveObject.maintainInterval) ;
+        key["ArrowDown"] = false ;
+    
+        touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
+        touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
+    
+        touchMoveObject.isToucheMove = true
+    
+        if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] < -touchMoveObject.threshold.default) {
+            key["KeyS"] = true ;
+        }
+    
+        if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] > touchMoveObject.threshold.default) {
+            key["ArrowDown"] = true ;
+        }
+    
+        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
+            key["swipeLeft"] = true ;
+            touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+        }
+    
+        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
+            key["swipeRight"] = true ;
+            touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+        }
     }
 
 });
