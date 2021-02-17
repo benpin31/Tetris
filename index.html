@@ -5,14 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./node_modules/nes.css/css/nes.min.css">
-    <!-- <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" /> -->
     <script type = "module" src="./js/main.js"></script>
     <title>Tetris</title>
 </head>
 <body>
     <div  id="score"  class="aside">
-        <section class = "container nes-container is-dark with-title">
+         <section class = "container ">
             <p class="title">Score</p>
             <div class="level">Level : <span>1</span> </div>
             <div class="score-total">Total : <span>0</span></div>
@@ -24,6 +22,7 @@
             <div class="tetris">Tetris : <span>0</span> </div>
         </section>
     </div>
+
     <div id="grid">
         <div class="cell column-1 row-1"></div>
         <div class="cell column-2 row-1"></div>
@@ -227,7 +226,8 @@
         <div class="cell column-10 row-20"></div> 
 
         <div id="game-over-div">
-            <article id="game-over-message" class="container nes-container is-dark with-title is-not-visible">
+             <article id="game-over-message" class="container is-not-visible">
+
                 Game over ! <br><br>
                 <div class="level">Level : <span>1</span> </div>
                 <div class="score-total">Total : <span>0</span></div>
@@ -255,8 +255,8 @@
 
 
     <div id = "next-hold" class="aside">
-        <div id = "next" class = "container nes-container is-dark with-title">
-            <p class="title">Next</p>
+        <div id = "next" class = "container">
+        <p class="title">Next</p>
             <div id = "next-tetro" class = "aside-tetro">
                 <div class="cell column-1 row-1"></div>
                 <div class="cell column-2 row-1"></div>
@@ -272,22 +272,22 @@
                 <div class="cell column-3 row-4"></div>
             </div>
         </div>
-        <div id = "hold" class = "container nes-container is-dark with-title">
-            <p class="title">Hold</p>
-            <div id = "hold-tetro" class = "aside-tetro">
-                <div class="cell column-1 row-1"></div>
-                <div class="cell column-2 row-1"></div>
-                <div class="cell column-3 row-1"></div>
-                <div class="cell column-1 row-2"></div>
-                <div class="cell column-2 row-2"></div>
-                <div class="cell column-3 row-2"></div>
-                <div class="cell column-1 row-3"></div>
-                <div class="cell column-2 row-3"></div>
-                <div class="cell column-3 row-3"></div>
-                <div class="cell column-1 row-4"></div>
-                <div class="cell column-2 row-4"></div>
-                <div class="cell column-3 row-4"></div>
-            </div>
+        <div id = "hold" class = "container">
+
+        <p class="title">Hold</p>
+        <div id = "hold-tetro" class = "aside-tetro">
+            <div class="cell column-1 row-1"></div>
+            <div class="cell column-2 row-1"></div>
+            <div class="cell column-3 row-1"></div>
+            <div class="cell column-1 row-2"></div>
+            <div class="cell column-2 row-2"></div>
+            <div class="cell column-3 row-2"></div>
+            <div class="cell column-1 row-3"></div>
+            <div class="cell column-2 row-3"></div>
+            <div class="cell column-3 row-3"></div>
+            <div class="cell column-1 row-4"></div>
+            <div class="cell column-2 row-4"></div>
+            <div class="cell column-3 row-4"></div>
         </div>
     </div>
 

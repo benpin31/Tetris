@@ -59,10 +59,24 @@ body {
 .container {
     background-color: black !important; 
     margin: 5vh 0 !important;
+    padding: 40px ;
+    position: relative ;
+    border : 3px solid white ;
+}
+
+.container > .title {
+    position:absolute ; 
+    top: -3px ;
+    z-index: 1;
+    padding: 5px ;
+}
+
+.container > div {
+    padding-bottom: 5px;
 }
 
 .aside {
-    width: calc(10 * var(--cell-size)); 
+    width: calc(10 * var(--cell-size));
 }
 
 .aside-tetro {
