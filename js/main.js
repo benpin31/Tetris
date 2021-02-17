@@ -243,7 +243,7 @@ const touchMoveObject = {
 
 console.log(touchMoveObject.gridDim)
 
-document.addEventListener("touchstart", event => {
+window.addEventListener("touchstart", event => {
     event.preventDefault();
 
     touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
@@ -255,9 +255,9 @@ document.addEventListener("touchstart", event => {
     }
 
     touchMoveObject.lastStart = Date.now() ;
-}, false);
+});
 
-document.addEventListener("touchmove", event => {
+window.addEventListener("touchmove", event => {
     event.preventDefault();
 
     touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
@@ -287,9 +287,9 @@ document.addEventListener("touchmove", event => {
         console.log("swipeRight", touchMoveObject["xStart"], touchMoveObject["xCurrent"] )
     }
 
-}, false);
+});
 
-document.addEventListener("touchend", event => { 
+window.addEventListener("touchend", event => { 
     event.preventDefault();
    
     key["ArrowUp"] = false ; 
@@ -306,8 +306,8 @@ document.addEventListener("touchend", event => {
     }
 })
 
-document.addEventListener("touchcancel", function (event) {
+window.addEventListener("touchcancel", function (event) {
     event.preventDefault();
     console.log("touchcancel: event.preventDefault()");
-}, false);
+});
 
