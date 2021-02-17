@@ -29,6 +29,8 @@ body {
     background-image: url("./Image/image.png");
     background-position: center;
     background-size: cover;
+
+    max-height: 100vh ;
 }
 
 #grid {
@@ -39,29 +41,29 @@ body {
     grid-template-columns: repeat(10, var(--cell-size));
     grid-template-rows: repeat(20, var(--cell-size));
     position: relative ;
-    margin: 5vh ; 
+    margin: 5vh; 
+    background-color: green;
 }
 
 #next-hold {
-    display: flex ;
-    flex-direction: column;
-    max-width: 100% ;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100% ;
 }
 
-/* @media (max-width: 1000px) {
-
-  } */
 
 .title {
-    background-color: black !important;
+    background-color: black ;
 }
 
 .container {
-    background-color: black !important; 
-    margin: 5vh 0 !important;
-    padding: 40px ;
-    position: relative ;
-    border : 3px solid white ;
+    background-color: black;
+    margin-bottom: var(--cell-size);
+    padding: var(--cell-size);
+    position: relative;
+    border: 3px solid white;
+    width: 100%
 }
 
 .container > .title {
@@ -75,9 +77,25 @@ body {
     padding-bottom: 5px;
 }
 
+
 .aside {
-    width: calc(10 * var(--cell-size));
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: left;
+    margin: 5vh; 
+
 }
+
+.score {
+    /* min-width: calc(10 * var(--cell-size)); */
+    width: 100% ;
+}
+
+/* #score > .container {
+    width: calc(10 * var(--cell-size)) ;
+} */
 
 .aside-tetro {
     height: calc(4*var(--cell-size));
@@ -87,15 +105,77 @@ body {
     grid-template-rows: repeat(4, var(--cell-size));
 }
 
-
-
 #hold, #next {
-    width: calc(5 * var(--cell-size));
+    /* width: calc(5 * var(--cell-size)); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#score div {
+.score div {
     margin: 10px 0;
 } 
+
+#simplified-score {
+    display: none;
+}
+
+#simplified-score div {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 738px) {
+
+    :root {
+        --cell-size : calc(80vh / 20) ;
+    }
+
+    #complete-score {
+        display: none;
+    }
+
+    #simplified-score {
+        display: block;
+    }
+
+    .container {
+        margin-bottom: 0 ;
+        padding: 0 ;
+        padding-top : calc(0.3*var(--cell-size)) ;
+    }
+
+    body {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .aside {
+        margin: 0 ;
+        height: 20vh ;
+
+    }
+
+    .aside-tetro {
+        /* height: calc(2*var(--cell-size)); */
+        height: 100% ;
+        width: calc(1.5* var(--cell-size));
+        display: grid;
+        grid-template-columns: calc(0.5*var(--cell-size));
+        grid-template-rows: calc(0.5*var(--cell-size));
+    }
+
+    #grid {
+        margin: 0 ;
+    }
+
+    #next-hold {
+        height: 100%
+    }
+}
+
+
 
 .column-1 {
     grid-column: 1 ;
