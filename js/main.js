@@ -14,10 +14,66 @@ let tetroHold ;
 let canFall = true ;
 let canMove  ;
 
-const key = {} ;
+class GamerAction {
+    constructor() {
+        this.key = {
+            ArrowDown: false,
+            ArrowUp: false,
+            ArrowLeft: false,
+            ArrowRight: false,
+            KeyS: false,
+            Space: false,
+
+        } 
+        this.swipe = {
+            touch: false,
+            maintain: false,
+            swipeUp: false,
+            swipeLeft: false,
+            swipeRight: false,
+        }
+
+        this.actions = {
+            accelerate: false,
+            hold: false,
+            goLeft: false,
+            goLeftSwipe: 0,
+            goRight: false,
+            goRightSwipe: 0,
+            rotate: false,
+            rotateSwipe: false,
+            restart: false,
+        }
+    }
+
+    updateSwipe(name, isSwipe) {
+        this.swipe[name] = isSwipe ;
+    }
+
+    updateKey(event) {
+        this.key[event.code] = event.type === "keydown" ;
+    }
+
+    updateActions() {
+        this.actions.accelerate = this.key.ArrowDown || this.swipe.maintain ;
+        this.actions.hold = this.key.KeyS || this.swipe.swipeUp;
+        this.actions.goLeft = this.key.ArrowLeft ; 
+        this.actions.goLeftSwipe += this.swipe.swipeLeft ? 1 : 0 ;
+        this.actions.goRight = this.key.ArrowRight ; 
+        this.actions.goRightSwipe += this.swipe.swipeRight ? 1 : 0;
+        this.actions.rotate = this.key.ArrowUp ; 
+        this.actions.rotateSwipe = this.swipe.touch ;
+        this.actions.restart = this.key.Space ;
+    }
+    
+
+}
+
+const gamerAction = new GamerAction() ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
+theme.volume = 0 ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
 const gameOverSound = new Audio('./audio/game-over.wav'); 
@@ -59,25 +115,21 @@ const nextStep = () => {
     }
 }
 
-const gamerAction = (name) => {
+const gamerMove = name => {
 
-    let keyArrowName ;
     let callbackMove ;
     switch(name) {
         case "rotate":
-            keyArrowName = "ArrowUp";
             callbackMove = () => tetro.rotate(grid) ;
             break ;
-        case "left":
-            keyArrowName = "ArrowLeft";
+        case "goLeft":
             callbackMove = () => tetro.move("l",grid) ;
             break ;
-        case "right":
-            keyArrowName = "ArrowRight";
+        case "goRight":
             callbackMove = () => tetro.move("r",grid) ;
     }
 
-    if(key[keyArrowName] && param.timings.noActionFrame.counter >= param.timings.noActionFrame.value) {
+    if(gamerAction.actions[name] && param.timings.noActionFrame.counter >= param.timings.noActionFrame.value) {
         tetro.unplot(grid)
         canMove = callbackMove() ;
         tetro.plot(grid)
@@ -89,11 +141,11 @@ const gamerAction = (name) => {
             canFall = true ;
             param.timings.noActionFrame.chainMoveCounter[name] ++ ;
         } else {
-            canMove = true ;
+            // canMove = true ;
             param.timings.noActionFrame.chainMoveCounter[name] = 0 ;
         } 
     } else {
-        if(!key[keyArrowName]) {
+        if(!gamerAction.actions[name]) {
             param.timings.noActionFrame.chainMoveCounter[name] = 0 ;
         }
     }
@@ -101,50 +153,63 @@ const gamerAction = (name) => {
 
 const gamerSwipeAction = (name) => {
     if(name === "left") {
-        if(key["swipeLeft"]) {        
+        if(gamerAction.actions.goLeftSwipe > 0) {
             tetro.unplot(grid)
             canMove = tetro.move("l",grid) ;
             tetro.plot(grid)
-            key["swipeLeft"] = false ;
+            gamerAction.actions.goLeftSwipe -- ;
 
             if (canMove) {
                 canFall = true ;
             } else {
-                canMove = true ;
+                // canMove = true ;
             }
         
-        } 
+        }
+    } 
 
+    if (name === "right") {
+        if(gamerAction.actions.goRightSwipe > 0) {
 
-    } else {
-        if(key["swipeRight"]) {
             tetro.unplot(grid)
             canMove = tetro.move("r",grid) ;
             tetro.plot(grid)
-            key["swipeRight"] = false ;
+            // gamerAction.actions.goRightSwipe = false ;
+            gamerAction.actions.goRightSwipe -- ;
             
             if (canMove) {
                 canFall = true ;
             } else {
-                canMove = true ;
+                // canMove = true ;
             }
         
 
         }
     }
 
+    if (name === "rotate") {
+        if(gamerAction.actions.rotateSwipe) {
+            tetro.unplot(grid)
+            canMove = tetro.rotate(grid) ;
+            tetro.plot(grid)        
+        }
+
+        gamerAction.updateSwipe("touch", false)
+        gamerAction.updateActions() ;
+    }
+
 
 }
 
 const accelerate = () => {
-    if(canFall) {
-        if (key.ArrowDown) {
+    if (canFall) {
+        if (gamerAction.actions.accelerate) {
             param.timings.fallings.current = 2 ;
         } else {
             param.timings.fallings.current = param.timings.fallings.value ;
         }
     } else {
-        if (key.ArrowDown) {
+        if (gamerAction.actions.accelerate) {
             nextStep()
         } 
     }
@@ -154,7 +219,7 @@ const holdTetro = () => {
 
     let tetroHoldSauv ;
 
-    if(key.KeyS & param.tetroHoldCounter === 0 ) {
+    if(gamerAction.actions.hold & param.tetroHoldCounter === 0 ) {
         holdSound.currentTime = 0 ;
         holdSound.play() ;
 
@@ -191,12 +256,13 @@ const holdTetro = () => {
 const game = () => {
     if (!param.gameOver) {
 
-        gamerAction("rotate") ;
-        gamerAction("left") ;
-        gamerAction("right") ;
+        gamerMove("rotate") ;
+        gamerMove("goLeft") ;
+        gamerMove("goRight") ;
 
         gamerSwipeAction("left") ;
         gamerSwipeAction("right") ;
+        gamerSwipeAction("rotate") ;
 
         accelerate() ;
         holdTetro() ;
@@ -223,7 +289,8 @@ const game = () => {
 
     } else {
         document.querySelector("#game-over-message").classList.remove("is-not-visible")
-        if(key.Space) {
+        param.gameOverCounter ++ ;
+        if(gamerAction.actions.restart) {
             grid.clearGrid([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
             param.reset() ;
             param.plotScore() ;
@@ -232,23 +299,32 @@ const game = () => {
             gameOverSound.pause() ;
             theme.currentTime = 0 ;
             theme.play() ;
+            gamerAction.actions.restart = false ;
         }
-    }
+     }
 
     window.requestAnimationFrame(game)
 }
 
-window.addEventListener("keydown", 
+document.addEventListener("keydown", 
     event => {
-        key[event.code] = event.type === "keydown" ;
-        if (!param.hasStarted) {
+        gamerAction.updateKey(event) ;
+        gamerAction.updateActions() ;
+
+        if (!param.hasStarted && event.code === "Space") {
             param.hasStarted = true ;
             game() ;
             document.querySelector("#home-page").classList.add("is-not-visible")
             theme.play()
         }
-    });
-window.addEventListener("keyup", event => key[event.code] = event.type === "keydown");
+    }
+)
+
+document.addEventListener("keyup",
+    event => {
+        gamerAction.updateKey(event) ;
+        gamerAction.updateActions()
+});
 
 
 const touchMoveObject = {
@@ -258,82 +334,84 @@ const touchMoveObject = {
     }, 
     lastStart: Date.now(),
     maintainInterval: 0,
-    maintainCounter: 0
+    maintainCounter: 0,
+    hasSwipe: false
 }
 
-window.addEventListener("touchstart", event => {
+document.addEventListener("touchstart", event => {
 
     if (param.hasStarted) {
-        touchMoveObject.maintainInterval = setInterval(() => {
-            !key["ArrowUp"] ? touchMoveObject.maintainCounter++ : "" ;
-            if (touchMoveObject.maintainCounter >= 1) {
-                key["ArrowDown"] = true ;
-            }
-        }, 200)
-    
+
+        touchMoveObject.maintainCounter++ ;
+        touchMoveObject.maintainInterval = setInterval(
+            () => {
+                if (touchMoveObject.maintainCounter >= 1) {
+                    touchMoveObject.hasSwipe = true ;
+                    gamerAction.updateSwipe("maintain",true, gamerAction.updateActions(event))
+                }
+        }
+        , 200)
     
         touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
         touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
     
-        if(Date.now() - touchMoveObject.lastStart < 200) {
-            key["ArrowUp"] = true ;
-        }
-    
-    
-    
         touchMoveObject.lastStart = Date.now() ;
     }
-
 });
 
-window.addEventListener("touchmove", event => {
+document.addEventListener("touchmove", event => {
+    touchMoveObject.hasSwipe = true ;
 
     if (param.hasStarted) {
+
         clearInterval(touchMoveObject.maintainInterval) ;
-        key["ArrowDown"] = false ;
-    
+        gamerAction.updateSwipe("maintain", false)  ;
+
         touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
         touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
     
-        touchMoveObject.isToucheMove = true
-    
-        if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] < -touchMoveObject.threshold.default) {
-            key["KeyS"] = true ;
-        }
-    
-        if(touchMoveObject["yCurrent"] - touchMoveObject["yStart"] > touchMoveObject.threshold.default) {
-            key["ArrowDown"] = true ;
-        }
-    
-        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
-            key["swipeLeft"] = true ;
-            touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
-        }
-    
+        gamerAction.updateSwipe("swipeUp", touchMoveObject["yCurrent"] - touchMoveObject["yStart"] <- touchMoveObject.threshold.default)  ;
+        gamerAction.updateSwipe("swipeLeft", touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid)  ;
+        gamerAction.updateSwipe("swipeRight", touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid)  ;
+
+        gamerAction.updateActions() ;
+
         if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
-            key["swipeRight"] = true ;
-            touchMoveObject["xStart"] = touchMoveObject["xCurrent"] ;
+            touchMoveObject["xStart"] += touchMoveObject.threshold.grid;
+        }
+
+        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
+            touchMoveObject["xStart"] -= touchMoveObject.threshold.grid;
         }
     }
 
 });
 
-window.addEventListener("touchend", event => { 
+document.addEventListener("touchend", event => { 
+
     event.preventDefault()
    
-    key["ArrowUp"] = false ; 
-    key["ArrowDown"] = false ;
-    key["KeyS"] = false ;
-    key["swipeLeft"] = false ;
-    key["swipeRight"] = false ;
+    gamerAction.updateSwipe("touch", !touchMoveObject.hasSwipe)
+    gamerAction.updateSwipe("maintain",false)
+    gamerAction.updateSwipe("swipeUp",false)
+    gamerAction.updateSwipe("swipeRight",false)
+    gamerAction.updateSwipe("swipeLeft",false)
+
+    gamerAction.updateActions(event) ;
+
     clearInterval(touchMoveObject.maintainInterval)
     touchMoveObject.maintainCounter = 0 ;
 
-    if (!param.hasStarted) {
+    if (!param.hasStarted && !touchMoveObject.hasSwipe) {
         param.hasStarted = true ;
         game() ;
         document.querySelector("#home-page").classList.add("is-not-visible")
         theme.play()
     }
-})
 
+    if (param.gameOver && param.gameOverCounter > 120) {
+        gamerAction.actions.restart = true ;
+    }
+
+    touchMoveObject.hasSwipe = false ;
+});

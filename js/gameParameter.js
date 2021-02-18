@@ -43,6 +43,7 @@ export class GameParameters {
         this.level = 1 ;
 
         this.gameOver = false ;
+        this.gameOverCounter = 0 ;
 
         this.score = JSON.parse(JSON.stringify(initialScore))
 
@@ -57,6 +58,7 @@ export class GameParameters {
         this.level = 1 ;
 
         this.gameOver = false ;
+        this.gameOverCounter = 0 ;
 
         this.score = JSON.parse(JSON.stringify(initialScore))
 
