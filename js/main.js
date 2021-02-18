@@ -24,12 +24,23 @@ console.log(scores)
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
-// theme.volume = 0 ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
 const gameOverSound = new Audio('./audio/game-over.wav'); 
 const holdSound = new Audio("./audio/holdSound.mp3")
 
+
+const updateScore = () => {
+    const table = document.querySelectorAll("#score-page-message table tr")
+    console.log(table.length)
+    console.log(scores.length)
+    
+    for (let k = 0 ; k < Math.min(table.length, scores.length) ; k++) {
+        table[k].querySelector(".playerName").innerText = scores[k][0]
+        table[k].querySelector(".playerScore").innerText = scores[k][1]
+    }
+    
+}
 
 const restart = () => {
     grid.clearGrid([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
@@ -60,6 +71,8 @@ const saveScore = () => {
     }
 
     myStorage.setItem("scores", JSON.stringify(scores))
+
+    updateScore()
 
 }
 
@@ -323,18 +336,8 @@ const whenPlotScores = () => {
 document.querySelector("#best-score").onclick = whenPlotScores ;
 document.querySelector("#simplified-best-score").onclick = whenPlotScores ;
 
+updateScore()
 
 
 
-
-
-const table = document.querySelectorAll("#score-page-message table tr")
-console.log(table.length)
-console.log(scores.length)
-
-
-for (let k = 0 ; k < Math.min(table.length, scores.length) ; k++) {
-    table[k].querySelector(".playerName").innerText = scores[k][0]
-    table[k].querySelector(".playerScore").innerText = scores[k][1]
-}
 
