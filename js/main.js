@@ -18,10 +18,6 @@ let canMove  ;
 const myStorage = window.localStorage ;
 const scores = myStorage.getItem("scores") ? JSON.parse(myStorage.getItem("scores")) : [] ;
 
-console.log(myStorage)
-console.log(scores)
-
-
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
@@ -32,8 +28,6 @@ const holdSound = new Audio("./audio/holdSound.mp3")
 
 const updateScore = () => {
     const table = document.querySelectorAll("#score-page-message table tr")
-    console.log(table.length)
-    console.log(scores.length)
     
     for (let k = 0 ; k < Math.min(table.length, scores.length) ; k++) {
         table[k].querySelector(".playerName").innerText = scores[k][0]
@@ -329,7 +323,6 @@ const whenPlotScores = () => {
 
     param.pause = !param.pause ;
 
-    console.log(param.pause)
 } 
 
 
