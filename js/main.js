@@ -18,7 +18,7 @@ let canMove  ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
-theme.volume = 0 ;
+// theme.volume = 0 ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
 const gameOverSound = new Audio('./audio/game-over.wav'); 

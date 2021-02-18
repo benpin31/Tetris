@@ -60,7 +60,7 @@ export class GamerAction {
     }
 
     touchStart(event, param) {
-
+        event.preventDefault()
         if (param.hasStarted) {
     
             this.touchMoveObject.maintainCounter++ ;
@@ -82,7 +82,7 @@ export class GamerAction {
 
     touchMove(event, param) {
         
-        // event.preventDefault()
+        event.preventDefault()
         this.touchMoveObject.hasSwipe = true ;
 
         if (param.hasStarted) {
@@ -115,6 +115,8 @@ export class GamerAction {
     }
 
     touchEnd(event, param, game, theme) {   
+        event.preventDefault()
+
         this.updateSwipe("touch", !this.touchMoveObject.hasSwipe)
         this.updateSwipe("maintain",false)
         this.updateSwipe("swipeUp",false)
