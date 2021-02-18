@@ -127,13 +127,13 @@ body {
     }
 
     #simplified-score {
-        display: block;
+        display: flex;
     }
 
     .container {
         margin-bottom: 0 ;
         padding: 0 ;
-        padding-top : calc(0.3*var(--cell-size)) ;
+        padding-top : calc(0.5*var(--cell-size)) ;
     }
 
     .container > div {
@@ -169,6 +169,11 @@ body {
     }
 }
 
+#score-page-message > table {
+    width: 100% ;
+    height: 100% ;
+}
+
 
 
 #game-over-div {
@@ -181,6 +186,19 @@ body {
     display: flex ;
     justify-content: center;
     align-items: center;
+}
+
+#game-over-div input {
+    width: 70%;
+    height: 40px;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-bottom: 3px solid white;
+    resize: none;
+    outline: none;
 }
 
 #home-page {
@@ -207,8 +225,8 @@ body {
     position: absolute ;
     height: calc(20*var(--cell-size)) ;
     width: calc(10 * var(--cell-size));
-    background-color: transparent;
-    z-index: 1
+    background-color: rgba(0, 0, 0, 0.70);
+    z-index: 2
 }
 
 #score-page-message {
@@ -240,6 +258,18 @@ body {
 
 .is-not-visible {
     display:none ;
+}
+
+#best-score {
+    display: flex;
+    justify-content: center;
+    padding: calc(0.5*var(--cell-size))
+}
+
+#simplified-best-score {
+    display: flex;
+    justify-content: center;
+    padding: calc(0.5*var(--cell-size)) 0 ;
 }
 
 

@@ -22,20 +22,21 @@
                 <div class="tripple">tripple : <span>0</span> </div>
                 <div class="tetris">Tetris : <span>0</span> </div>
             </section>
-        </div>
 
-        <div  id = "best-score" class="score">
-            <section class = "container ">
+            <section id = "best-score" class = "container">
                 <input type="button" value="See score">
             </section>
         </div>
-
 
 
         <div  id="simplified-score" class="score">
             <section class = "container ">
                 <p class="title">Score</p>
                 <div class="score-total"><span>0</span></div>
+            </section>
+
+            <section id = "simplified-best-score" class = "container ">
+                <input type="button" value="See score">
             </section>
         </div>
 
@@ -291,10 +292,13 @@
                 <div class="single">Single : <span>0</span> </div>
                 <div class="double">Double : <span>0</span> </div>
                 <div class="tripple">tripple : <span>0</span> </div>
-                <div class="tetris">Tetris : <span>0</span> </div> <br>
-                <div class="press">Press space to restart</div>
+                <div class="tetris">Tetris : <span>0</span> </div> <br><br>
+                <div>  
+                    Enter your name : 
+                    <input type="text" name="Player name" id="player-name" value="Player"></div> <br><br>
 
-                <input type="text" name="Player name" id="player-name">
+                <div class="press">Press space to restart</div><br>
+
 
             </article>
         </div>
@@ -311,10 +315,29 @@
 
         <div id="score-page" class = "is-not-visible">
             <article id="score-page-message">
-                <h1>TETRIS</h1>
-                <span>A game by Benjamin Pinard</span>
-                <span>Based on an original idea by Alexey Pajitnov </span>
-                <span class = "press">Press space to start</span>
+                <table>
+                    <tr>
+                        <td class="playerName">Player 1</td>
+                        <td class="playerScore">...</td>
+                    </tr>
+                    <tr>
+                        <td class="playerName">Player 2</td>
+                        <td class="playerScore">...</td>
+                    </tr>
+                    <tr>
+                        <td class="playerName">Player 3</td>
+                        <td class="playerScore">...</td>
+                    </tr>
+                    <tr>
+                        <td class="playerName">Player 4</td>
+                        <td class="playerScore">...</td>
+                    </tr>
+                    <tr>
+                        <td class="playerName">Player 5</td>
+                        <td class="playerScore">...</td>
+                    </tr>
+                    
+                </table>
             </article>
         </div>
 

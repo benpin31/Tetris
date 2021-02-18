@@ -45,6 +45,8 @@ export class GameParameters {
         this.gameOver = false ;
         this.gameOverCounter = 0 ;
 
+        this.pause = false ;
+
         this.score = JSON.parse(JSON.stringify(initialScore))
 
         this.tetroHoldCounter = 0 ;
@@ -59,6 +61,8 @@ export class GameParameters {
 
         this.gameOver = false ;
         this.gameOverCounter = 0 ;
+
+        this.pause = false ;
 
         this.score = JSON.parse(JSON.stringify(initialScore))
 

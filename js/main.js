@@ -10,7 +10,6 @@ const gamerAction = new GamerAction() ;
 
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
-nextTetro.plotNextTetro(grid)
 let tetroHold ;
 
 let canFall = true ;
@@ -256,59 +255,86 @@ const holdTetro = () => {
 }
 
 const game = () => {
-    if (!param.gameOver) {
+    if(!param.pause) {
+        if (!param.gameOver) {
 
-        gamerMove("rotate") ;
-        gamerMove("goLeft") ;
-        gamerMove("goRight") ;
-
-        gamerSwipeAction("left") ;
-        gamerSwipeAction("right") ;
-        gamerSwipeAction("rotate") ;
-
-        accelerate() ;
-        holdTetro() ;
-
-        param.timings.noActionFrame.counter++ ;
-
-        if(canFall) {
-            if (param.timings.fallings.counter >= param.timings.fallings.current) {
-                tetro.unplot(grid)
-                canFall = tetro.move("d", grid) ;
-                tetro.plot(grid)
+            gamerMove("rotate") ;
+            gamerMove("goLeft") ;
+            gamerMove("goRight") ;
     
-                param.timings.fallings.counter = 0 ;
+            gamerSwipeAction("left") ;
+            gamerSwipeAction("right") ;
+            gamerSwipeAction("rotate") ;
+    
+            accelerate() ;
+            holdTetro() ;
+    
+            param.timings.noActionFrame.counter++ ;
+    
+            if(canFall) {
+                if (param.timings.fallings.counter >= param.timings.fallings.current) {
+                    tetro.unplot(grid)
+                    canFall = tetro.move("d", grid) ;
+                    tetro.plot(grid)
+        
+                    param.timings.fallings.counter = 0 ;
+                } else {
+                    param.timings.fallings.counter++ ;
+                }
             } else {
-                param.timings.fallings.counter++ ;
+                if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
+                    param.timings.reachFloor.counter++ ;
+                } else {
+                    nextStep() ;
+                }
             }
+    
         } else {
-            if(param.timings.reachFloor.counter < param.timings.reachFloor.value) {
-                param.timings.reachFloor.counter++ ;
-            } else {
-                nextStep() ;
-            }
-        }
+            gameOver()
+         }
+    }
 
-    } else {
-        gameOver()
-     }
 
     window.requestAnimationFrame(game)
 }
 
-document.addEventListener("keydown", event => gamerAction.pressKey(event, param, game, theme))
+document.addEventListener("keydown", event => gamerAction.pressKey(event, param, game, theme, nextTetro, grid))
 document.addEventListener("keyup", event => gamerAction.deletePressKey(event))
 document.querySelector("#grid").addEventListener("touchstart", event => gamerAction.touchStart(event, param));
 document.querySelector("#grid").addEventListener("touchmove", event =>gamerAction.touchMove(event, param));
-document.querySelector("#grid").addEventListener("touchend", event => gamerAction.touchEnd(event, param, game, theme));
+document.querySelector("#grid").addEventListener("touchend", event => gamerAction.touchEnd(event, param, game, theme, nextTetro, grid));
 
-document.querySelector("#best-score").onclick = () => {
-    document.querySelector("#score-page").classList.remove("is-not-visible")
-    console.log("toto")
+const whenPlotScores = () => {
+    if (!param.hasStarted) {
+        document.querySelector("#home-page").classList.toggle("is-not-visible")
+    } else {
+        document.querySelector("#home-page").classList.add("is-not-visible")
+        document.querySelector("#grid").classList.toggle("is-not-visible")
+
+    }
+    document.querySelector("#score-page").classList.toggle("is-not-visible")
+
+    param.pause = !param.pause ;
+
+    console.log(param.pause)
+} 
+
+
+document.querySelector("#best-score").onclick = whenPlotScores ;
+document.querySelector("#simplified-best-score").onclick = whenPlotScores ;
+
+
+
+
+
+
+const table = document.querySelectorAll("#score-page-message table tr")
+console.log(table.length)
+console.log(scores.length)
+
+
+for (let k = 0 ; k < Math.min(table.length, scores.length) ; k++) {
+    table[k].querySelector(".playerName").innerText = scores[k][0]
+    table[k].querySelector(".playerScore").innerText = scores[k][1]
 }
 
-document.querySelector("#best-score").addEventListener("touchend", 
-event => {
-    event.preventDefault() ;
-    console.log("toto") ;
-})

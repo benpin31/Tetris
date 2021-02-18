@@ -42,12 +42,13 @@ export class GamerAction {
 
     }
 
-    pressKey(event, param, game, theme) {
+    pressKey(event, param, game, theme, nextTetro, grid) {
         this.updateKey(event) ;
         this.updateActions() ;
 
         if (!param.hasStarted && event.code === "Space") {
             param.hasStarted = true ;
+            nextTetro.plotNextTetro(grid)
             game() ;
             document.querySelector("#home-page").classList.add("is-not-visible")
             theme.play()
@@ -114,8 +115,8 @@ export class GamerAction {
     
     }
 
-    touchEnd(event, param, game, theme) {   
-        // event.preventDefault()
+    touchEnd(event, param, game, theme, nextTetro, grid) {   
+        event.preventDefault()
 
         this.updateSwipe("touch", !this.touchMoveObject.hasSwipe)
         this.updateSwipe("maintain",false)
@@ -132,6 +133,7 @@ export class GamerAction {
             param.hasStarted = true ;
             game() ;
             document.querySelector("#home-page").classList.add("is-not-visible")
+            nextTetro.plotNextTetro(grid)
             theme.play()
         }
     
