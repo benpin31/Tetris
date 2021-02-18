@@ -1,10 +1,13 @@
 import {Grid} from "./grid.js"
 import {TetrominosBag} from "./tetrominos.js"
 import {GameParameters} from "./gameParameter.js"
+import {GamerAction} from "./gamerInteractions.js"
 
 const param = new GameParameters() ;
 const grid = new Grid(10,20);
 const tetrominos = new TetrominosBag()
+const gamerAction = new GamerAction() ;
+console.log(gamerAction.touchMoveObject.threshold.grid)
 
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
@@ -13,63 +16,6 @@ let tetroHold ;
 
 let canFall = true ;
 let canMove  ;
-
-class GamerAction {
-    constructor() {
-        this.key = {
-            ArrowDown: false,
-            ArrowUp: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-            KeyS: false,
-            Space: false,
-
-        } 
-        this.swipe = {
-            touch: false,
-            maintain: false,
-            swipeUp: false,
-            swipeLeft: false,
-            swipeRight: false,
-        }
-
-        this.actions = {
-            accelerate: false,
-            hold: false,
-            goLeft: false,
-            goLeftSwipe: 0,
-            goRight: false,
-            goRightSwipe: 0,
-            rotate: false,
-            rotateSwipe: false,
-            restart: false,
-        }
-    }
-
-    updateSwipe(name, isSwipe) {
-        this.swipe[name] = isSwipe ;
-    }
-
-    updateKey(event) {
-        this.key[event.code] = event.type === "keydown" ;
-    }
-
-    updateActions() {
-        this.actions.accelerate = this.key.ArrowDown || this.swipe.maintain ;
-        this.actions.hold = this.key.KeyS || this.swipe.swipeUp;
-        this.actions.goLeft = this.key.ArrowLeft ; 
-        this.actions.goLeftSwipe += this.swipe.swipeLeft ? 1 : 0 ;
-        this.actions.goRight = this.key.ArrowRight ; 
-        this.actions.goRightSwipe += this.swipe.swipeRight ? 1 : 0;
-        this.actions.rotate = this.key.ArrowUp ; 
-        this.actions.rotateSwipe = this.swipe.touch ;
-        this.actions.restart = this.key.Space ;
-    }
-    
-
-}
-
-const gamerAction = new GamerAction() ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
@@ -141,7 +87,6 @@ const gamerMove = name => {
             canFall = true ;
             param.timings.noActionFrame.chainMoveCounter[name] ++ ;
         } else {
-            // canMove = true ;
             param.timings.noActionFrame.chainMoveCounter[name] = 0 ;
         } 
     } else {
@@ -162,7 +107,6 @@ const gamerSwipeAction = (name) => {
             if (canMove) {
                 canFall = true ;
             } else {
-                // canMove = true ;
             }
         
         }
@@ -174,13 +118,10 @@ const gamerSwipeAction = (name) => {
             tetro.unplot(grid)
             canMove = tetro.move("r",grid) ;
             tetro.plot(grid)
-            // gamerAction.actions.goRightSwipe = false ;
             gamerAction.actions.goRightSwipe -- ;
             
             if (canMove) {
                 canFall = true ;
-            } else {
-                // canMove = true ;
             }
         
 
@@ -197,7 +138,6 @@ const gamerSwipeAction = (name) => {
         gamerAction.updateSwipe("touch", false)
         gamerAction.updateActions() ;
     }
-
 
 }
 
@@ -306,112 +246,8 @@ const game = () => {
     window.requestAnimationFrame(game)
 }
 
-document.addEventListener("keydown", 
-    event => {
-        gamerAction.updateKey(event) ;
-        gamerAction.updateActions() ;
-
-        if (!param.hasStarted && event.code === "Space") {
-            param.hasStarted = true ;
-            game() ;
-            document.querySelector("#home-page").classList.add("is-not-visible")
-            theme.play()
-        }
-    }
-)
-
-document.addEventListener("keyup",
-    event => {
-        gamerAction.updateKey(event) ;
-        gamerAction.updateActions()
-});
-
-
-const touchMoveObject = {
-    threshold: {
-        default: 100,
-        grid: document.querySelector("#grid").offsetWidth/10
-    }, 
-    lastStart: Date.now(),
-    maintainInterval: 0,
-    maintainCounter: 0,
-    hasSwipe: false
-}
-
-document.addEventListener("touchstart", event => {
-
-    if (param.hasStarted) {
-
-        touchMoveObject.maintainCounter++ ;
-        touchMoveObject.maintainInterval = setInterval(
-            () => {
-                if (touchMoveObject.maintainCounter >= 1) {
-                    touchMoveObject.hasSwipe = true ;
-                    gamerAction.updateSwipe("maintain",true, gamerAction.updateActions(event))
-                }
-        }
-        , 200)
-    
-        touchMoveObject["xStart"] = event.changedTouches[0].pageX ;
-        touchMoveObject["yStart"] = event.changedTouches[0].pageY ;
-    
-        touchMoveObject.lastStart = Date.now() ;
-    }
-});
-
-document.addEventListener("touchmove", event => {
-    touchMoveObject.hasSwipe = true ;
-
-    if (param.hasStarted) {
-
-        clearInterval(touchMoveObject.maintainInterval) ;
-        gamerAction.updateSwipe("maintain", false)  ;
-
-        touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
-        touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
-    
-        gamerAction.updateSwipe("swipeUp", touchMoveObject["yCurrent"] - touchMoveObject["yStart"] <- touchMoveObject.threshold.default)  ;
-        gamerAction.updateSwipe("swipeLeft", touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid)  ;
-        gamerAction.updateSwipe("swipeRight", touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid)  ;
-
-        gamerAction.updateActions() ;
-
-        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] > touchMoveObject.threshold.grid) {
-            touchMoveObject["xStart"] += touchMoveObject.threshold.grid;
-        }
-
-        if(touchMoveObject["xCurrent"] - touchMoveObject["xStart"] < -touchMoveObject.threshold.grid) {
-            touchMoveObject["xStart"] -= touchMoveObject.threshold.grid;
-        }
-    }
-
-});
-
-document.addEventListener("touchend", event => { 
-
-    event.preventDefault()
-   
-    gamerAction.updateSwipe("touch", !touchMoveObject.hasSwipe)
-    gamerAction.updateSwipe("maintain",false)
-    gamerAction.updateSwipe("swipeUp",false)
-    gamerAction.updateSwipe("swipeRight",false)
-    gamerAction.updateSwipe("swipeLeft",false)
-
-    gamerAction.updateActions(event) ;
-
-    clearInterval(touchMoveObject.maintainInterval)
-    touchMoveObject.maintainCounter = 0 ;
-
-    if (!param.hasStarted && !touchMoveObject.hasSwipe) {
-        param.hasStarted = true ;
-        game() ;
-        document.querySelector("#home-page").classList.add("is-not-visible")
-        theme.play()
-    }
-
-    if (param.gameOver && param.gameOverCounter > 120) {
-        gamerAction.actions.restart = true ;
-    }
-
-    touchMoveObject.hasSwipe = false ;
-});
+document.addEventListener("keydown", event => gamerAction.pressKey(event, param, game, theme))
+document.addEventListener("keyup", event => gamerAction.deletePressKey(event))
+document.addEventListener("touchstart", event => gamerAction.touchStart(event, param));
+document.addEventListener("touchmove", event =>gamerAction.touchMove(event, param));
+document.addEventListener("touchend", event => gamerAction.touchEnd(event, param, game, theme));
