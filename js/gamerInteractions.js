@@ -81,36 +81,40 @@ export class GamerAction {
     }
 
     touchMove(event, param) {
+        
+        // event.preventDefault()
         this.touchMoveObject.hasSwipe = true ;
 
         if (param.hasStarted) {
     
             clearInterval(this.touchMoveObject.maintainInterval) ;
             this.updateSwipe("maintain", false)  ;
-    
+
             this.touchMoveObject["xCurrent"] = event.changedTouches[0].pageX ;
             this.touchMoveObject["yCurrent"] = event.changedTouches[0].pageY ;
         
-            this.updateSwipe("swipeUp", this.touchMoveObject["yCurrent"] - this.touchMoveObject["yStart"] <- this.touchMoveObject.threshold.default)  ;
+            this.updateSwipe("swipeUp", this.touchMoveObject["yCurrent"] - this.touchMoveObject["yStart"] < -this.touchMoveObject.threshold.default)  ;
             this.updateSwipe("swipeLeft", this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] < -this.touchMoveObject.threshold.grid)  ;
             this.updateSwipe("swipeRight", this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] > this.touchMoveObject.threshold.grid)  ;
     
-            this.updateActions() ;
     
             if(this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] > this.touchMoveObject.threshold.grid) {
-                this.touchMoveObject["xStart"] += this.touchMoveObject.threshold.grid;
+                this.touchMoveObject["xStart"] += this.touchMoveObject.threshold.grid //this.touchMoveObject["xCurrent"]
             }
     
             if(this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] < -this.touchMoveObject.threshold.grid) {
-                this.touchMoveObject["xStart"] -= this.touchMoveObject.threshold.grid;
+                this.touchMoveObject["xStart"] -= this.touchMoveObject.threshold.grid //this.touchMoveObject["xStart"] = this.touchMoveObject["xCurrent"]
             }
+
+            this.updateActions() ;
+
         }
+
+
     
     }
 
-    touchEnd(event, param, game, theme) {
-        event.preventDefault()
-   
+    touchEnd(event, param, game, theme) {   
         this.updateSwipe("touch", !this.touchMoveObject.hasSwipe)
         this.updateSwipe("maintain",false)
         this.updateSwipe("swipeUp",false)

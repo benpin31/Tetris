@@ -7,7 +7,6 @@ const param = new GameParameters() ;
 const grid = new Grid(10,20);
 const tetrominos = new TetrominosBag()
 const gamerAction = new GamerAction() ;
-console.log(gamerAction.touchMoveObject.threshold.grid)
 
 let tetro = tetrominos.shuffle() ;
 let nextTetro = tetrominos.shuffle() ;
@@ -19,7 +18,7 @@ let canMove  ;
 
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
-// theme.volume = 0 ;
+theme.volume = 0 ;
 const explodeSound = new Audio('./audio/explosion.mp3'); 
 const fallSound = new Audio('./audio/punch.mp3'); 
 const gameOverSound = new Audio('./audio/game-over.wav'); 
@@ -99,16 +98,21 @@ const gamerMove = name => {
 const gamerSwipeAction = (name) => {
     if(name === "left") {
         if(gamerAction.actions.goLeftSwipe > 0) {
+
             tetro.unplot(grid)
             canMove = tetro.move("l",grid) ;
             tetro.plot(grid)
             gamerAction.actions.goLeftSwipe -- ;
+            gamerAction.updateSwipe("swipeLeft", false)
 
             if (canMove) {
                 canFall = true ;
             } else {
+                gamerAction.actions.goLeftSwipe = 0 ;
             }
-        
+            // gamerAction.updateActions() ;
+
+
         }
     } 
 
@@ -119,11 +123,15 @@ const gamerSwipeAction = (name) => {
             canMove = tetro.move("r",grid) ;
             tetro.plot(grid)
             gamerAction.actions.goRightSwipe -- ;
+            gamerAction.updateSwipe("swipeRight", false)
             
             if (canMove) {
                 canFall = true ;
+            } else {
+                gamerAction.actions.goRightSwipe = 0 ;
             }
-        
+            // gamerAction.updateActions() ;
+
 
         }
     }
