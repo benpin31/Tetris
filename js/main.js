@@ -16,6 +16,13 @@ let tetroHold ;
 let canFall = true ;
 let canMove  ;
 
+const myStorage = window.localStorage ;
+const scores = myStorage.getItem("scores") ? JSON.parse(myStorage.getItem("scores")) : [] ;
+
+console.log(myStorage)
+console.log(scores)
+
+
 const theme = new Audio('./audio/tetris-theme.mp3'); 
 theme.loop = true ;
 // theme.volume = 0 ;
@@ -24,6 +31,47 @@ const fallSound = new Audio('./audio/punch.mp3');
 const gameOverSound = new Audio('./audio/game-over.wav'); 
 const holdSound = new Audio("./audio/holdSound.mp3")
 
+
+const restart = () => {
+    grid.clearGrid([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
+    param.reset() ;
+    param.plotScore() ;
+    canFall = true ;
+    document.querySelector("#game-over-message").classList.add("is-not-visible")
+    gameOverSound.pause() ;
+    theme.currentTime = 0 ;
+    theme.play() ;
+    gamerAction.actions.restart = false ;
+}
+
+const saveScore = () => {
+
+    const gamerName = document.querySelector("#player-name").value ;
+    const finalScore = param.score.total ;
+
+    if (scores.length === 0) {
+        scores.push([gamerName, finalScore])
+    } else {
+        let lowerScoreIndex = 0 ;
+        while (lowerScoreIndex < scores.length && scores[lowerScoreIndex][1] > finalScore) {
+            lowerScoreIndex ++ ;
+        }
+        scores.splice(lowerScoreIndex, 0, [gamerName, finalScore])
+
+    }
+
+    myStorage.setItem("scores", JSON.stringify(scores))
+
+}
+
+const gameOver = () => {
+
+    param.gameOverCounter ++ ;
+    if(gamerAction.actions.restart) {
+        saveScore() ;
+        restart() ;
+    }
+}
 
 const nextStep = () => {
     if(!tetro.isAboveGrid()) {
@@ -55,6 +103,8 @@ const nextStep = () => {
     } else {
         param.gameOver = true ;
         theme.pause() ;
+        document.querySelector("#game-over-message").classList.remove("is-not-visible")
+        document.querySelector("#player-name").focus() ;
         gameOverSound.currentTime = 0
         gameOverSound.play() ;
     }
@@ -140,7 +190,11 @@ const gamerSwipeAction = (name) => {
         if(gamerAction.actions.rotateSwipe) {
             tetro.unplot(grid)
             canMove = tetro.rotate(grid) ;
-            tetro.plot(grid)        
+            tetro.plot(grid)     
+            
+            if (canMove) {
+                canFall = true ;
+            }
         }
 
         gamerAction.updateSwipe("touch", false)
@@ -236,19 +290,7 @@ const game = () => {
         }
 
     } else {
-        document.querySelector("#game-over-message").classList.remove("is-not-visible")
-        param.gameOverCounter ++ ;
-        if(gamerAction.actions.restart) {
-            grid.clearGrid([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
-            param.reset() ;
-            param.plotScore() ;
-            canFall = true ;
-            document.querySelector("#game-over-message").classList.add("is-not-visible")
-            gameOverSound.pause() ;
-            theme.currentTime = 0 ;
-            theme.play() ;
-            gamerAction.actions.restart = false ;
-        }
+        gameOver()
      }
 
     window.requestAnimationFrame(game)
@@ -256,6 +298,17 @@ const game = () => {
 
 document.addEventListener("keydown", event => gamerAction.pressKey(event, param, game, theme))
 document.addEventListener("keyup", event => gamerAction.deletePressKey(event))
-document.addEventListener("touchstart", event => gamerAction.touchStart(event, param));
-document.addEventListener("touchmove", event =>gamerAction.touchMove(event, param));
-document.addEventListener("touchend", event => gamerAction.touchEnd(event, param, game, theme));
+document.querySelector("#grid").addEventListener("touchstart", event => gamerAction.touchStart(event, param));
+document.querySelector("#grid").addEventListener("touchmove", event =>gamerAction.touchMove(event, param));
+document.querySelector("#grid").addEventListener("touchend", event => gamerAction.touchEnd(event, param, game, theme));
+
+document.querySelector("#best-score").onclick = () => {
+    document.querySelector("#score-page").classList.remove("is-not-visible")
+    console.log("toto")
+}
+
+document.querySelector("#best-score").addEventListener("touchend", 
+event => {
+    event.preventDefault() ;
+    console.log("toto") ;
+})
