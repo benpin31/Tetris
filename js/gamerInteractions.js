@@ -75,26 +75,40 @@ export class GamerAction {
         this.actions.restart = this.key.Space ;
     }
 
+    showCommand(param) {
+        document.querySelector("#home-page").classList.add("is-not-visible") ;
+        document.querySelector("#commands").classList.remove("is-not-visible") ;
+        param.showCommand = true ;
+    }
+
+    startGame(param, game, theme, nextTetro, grid) {
+        param.hasStarted = true ;
+        nextTetro.plotNextTetro(grid)
+        game() ;
+        document.querySelector("#commands").classList.add("is-not-visible")
+        theme.play()
+    }
+
     pressKey(event, param, game, theme, nextTetro, grid) {
         //  handler for keyboard press
         this.updateKey(event) ;
         this.updateActions() ;
             // when a key is pressed : update key and associated actions
 
-        if (!param.hasStarted && event.code === "Space") {
+        if (!param.showCommand && event.code === "Space") {
+            this.showCommand(param)
+        } else if (!param.hasStarted && param.showCommand && event.code === "Space") {
             // special case for a space press if the game has not started yet : it launch is
-            param.hasStarted = true ;
-            nextTetro.plotNextTetro(grid)
-            game() ;
-            document.querySelector("#home-page").classList.add("is-not-visible")
-            theme.play()
+            this.startGame(param, game, theme, nextTetro, grid) ;
         }
     }
 
     deletePressKey(event) {
         // handler for "keyup" advance listener
         this.updateKey(event) ;
-        this.updateActions()
+        this.updateActions() ;
+
+
     }
 
     touchStart(event, param) {
@@ -183,24 +197,20 @@ export class GamerAction {
         clearInterval(this.touchMoveObject.maintainInterval)
         this.touchMoveObject.maintainCounter = 0 ;
             // clear interval of the maintain : if before the 200ms, the touch will be consider as a click
-    
-        if (!param.hasStarted && !this.touchMoveObject.hasSwipe) {
+
+        if (!param.showCommand && !this.touchMoveObject.hasSwipe) {
+            this.showCommand(param)
+        } else if (!param.hasStarted && param.showCommand && !this.touchMoveObject.hasSwipe) {
             // special case for a space press if the game has not started yet : it launch is
-            param.hasStarted = true ;
-            game() ;
-            document.querySelector("#home-page").classList.add("is-not-visible")
-            nextTetro.plotNextTetro(grid)
-            theme.play()
+            this.startGame(param, game, theme, nextTetro, grid) ;
         }
     
         if (param.gameOver && param.gameOverCounter > 120) {
             // the user can't restart immadiatly if win : en let 2 seconds (the frame rate of the game is 60fps)
-            this.actions.restart = true ;
+            this.startGame(param, game, theme, nextTetro, grid) ;
         }
     
         this.touchMoveObject.hasSwipe = false ;
-
-        // return true
     }
 
 

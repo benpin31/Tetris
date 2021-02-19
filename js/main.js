@@ -305,6 +305,7 @@ const game = () => {
     window.requestAnimationFrame(game)
 }
 
+
 document.addEventListener("keydown", event => gamerAction.pressKey(event, param, game, theme, nextTetro, grid))
 document.addEventListener("keyup", event => gamerAction.deletePressKey(event))
 document.querySelector("#grid").addEventListener("touchstart", event => gamerAction.touchStart(event, param));

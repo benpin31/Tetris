@@ -72,6 +72,7 @@ export class GameParameters {
         this.hasStarted = false ;
         // indicate the game has been launch. Be carrefull : the game is still consider launch chan game over : and the loop
         // to chack action is still looping. The pârameter is just to manage user interaction before the first start game
+        this.showCommand = false ;
     }   
 
     reset() {

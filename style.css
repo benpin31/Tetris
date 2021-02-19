@@ -201,7 +201,7 @@ body {
     outline: none;
 }
 
-#home-page {
+#home-page, #commands {
     position: absolute ;
     height: calc(20*var(--cell-size)) ;
     width: calc(10 * var(--cell-size));
@@ -209,7 +209,7 @@ body {
     z-index: 1
 }
 
-#home-page-message {
+#home-page-message, #commands-messages {
     height: 100% ;
     width: 100% ;
 
@@ -260,17 +260,25 @@ body {
     display:none ;
 }
 
-#best-score {
+#best-score, #simplified-best-score {
     display: flex;
     justify-content: center;
-    padding: calc(0.5*var(--cell-size))
+    padding: calc(0.5*var(--cell-size)) ;
+    cursor: pointer;
 }
 
 #simplified-best-score {
+    font-size: 0.5rem ;
+    max-width: 50% ;
+    text-align: center;
+}
+
+/* #simplified-best-score {
     display: flex;
     justify-content: center;
     padding: calc(0.5*var(--cell-size)) 0 ;
-}
+    cursor: pointer;
+} */
 
 
 
