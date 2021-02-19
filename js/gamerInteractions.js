@@ -207,7 +207,7 @@ export class GamerAction {
     
         if (param.gameOver && param.gameOverCounter > 120) {
             // the user can't restart immadiatly if win : en let 2 seconds (the frame rate of the game is 60fps)
-            this.startGame(param, game, theme, nextTetro, grid) ;
+            this.actions.restart = true        
         }
     
         this.touchMoveObject.hasSwipe = false ;
