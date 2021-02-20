@@ -219,6 +219,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    text-align: center;
+}
+
+#commands-messages p {
+    font-size: 0.8rem;
 }
 
 #score-page {
@@ -273,13 +278,13 @@ body {
     text-align: center;
 }
 
-/* #simplified-best-score {
-    display: flex;
-    justify-content: center;
-    padding: calc(0.5*var(--cell-size)) 0 ;
-    cursor: pointer;
-} */
+.command-icon {
+    height: 4vh ;
+}
 
+.command-icon-img {
+    height: 100%
+}
 
 
 /* Playing grid and tetromnios class definition */

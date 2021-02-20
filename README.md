@@ -22,7 +22,6 @@ https://benpin31.github.io/Tetris/
 
 # What remain to do
 
-- Finish comments and refacto some part of the code
 - Correct some (minor) bugs due to the interface
 - Create a div of rules and commands 
 - Improve collision gameplay : the tetrominos can't turn if collision with an other tetromino. Newer rules make it possible

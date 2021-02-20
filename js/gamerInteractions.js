@@ -68,11 +68,15 @@ export class GamerAction {
         this.actions.hold = this.key.KeyS || this.swipe.swipeUp;
         this.actions.goLeft = this.key.ArrowLeft ; 
         this.actions.goLeftSwipe += this.swipe.swipeLeft ? 1 : 0 ;
+        //  here go left swipe is a coutner, not a boolean. Here why :  when swipe left : and the player finger reach a trheshol to go on left,
+        //  the cStart position is put to 0: thus the next frame, the swipe left become false whereas the move could not have been take into account.
+        //  to avoid that, W incremenet a counter chich is decement when the move is effectively done  
         this.actions.goRight = this.key.ArrowRight ; 
         this.actions.goRightSwipe += this.swipe.swipeRight ? 1 : 0;
         this.actions.rotate = this.key.ArrowUp ; 
         this.actions.rotateSwipe = this.swipe.touch ;
         this.actions.restart = this.key.Space ;
+        console.log(this.actions.goRightSwipe)
     }
 
     showCommand(param) {
@@ -164,11 +168,11 @@ export class GamerAction {
                 //  mean thta there is  a true swipe
     
             if(this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] > this.touchMoveObject.threshold.grid) {
-                this.touchMoveObject["xStart"] += this.touchMoveObject.threshold.grid
+                this.touchMoveObject["xStart"] = this.touchMoveObject["xCurrent"]//+= this.touchMoveObject.threshold.grid
             }
     
             if(this.touchMoveObject["xCurrent"] - this.touchMoveObject["xStart"] < -this.touchMoveObject.threshold.grid) {
-                this.touchMoveObject["xStart"] -= this.touchMoveObject.threshold.grid 
+                this.touchMoveObject["xStart"] = this.touchMoveObject["xCurrent"]//-= this.touchMoveObject.threshold.grid 
             }
             //  to chain the swipe, we modify the starting point for distance computation
 
@@ -213,6 +217,19 @@ export class GamerAction {
         this.touchMoveObject.hasSwipe = false ;
     }
 
+    plotScore(param) {
+        // handler when the player click on "Best score" button
+        if (!param.hasStarted) {
+            document.querySelector("#home-page").classList.toggle("is-not-visible")
+        } else {
+            document.querySelector("#home-page").classList.add("is-not-visible")
+            document.querySelector("#grid").classList.toggle("is-not-visible")
+    
+        }
+        document.querySelector("#score-page").classList.toggle("is-not-visible")
+    
+        param.pause = !param.pause ;
+    }
 
 
 
